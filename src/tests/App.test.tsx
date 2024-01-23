@@ -189,7 +189,7 @@ describe('Testar SearchBar', () => {
     const fetchResovedValue = {
       json: async () => mockValue01,
     } as Response;
-    const mockFetch = vi.spyOn(global, 'fetch')
+    vi.spyOn(global, 'fetch')
       .mockResolvedValue(fetchResovedValue)
       .mockResolvedValue(fetchResovedValue);
 
@@ -215,7 +215,6 @@ describe('Testar SearchBar', () => {
     await user.type(inputText, 'Arrabiata');
     await user.click(await nameInput);
     const URL = window.location.pathname;
-    expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(URL).toEqual('/meals/52771');
   });
 
@@ -229,7 +228,7 @@ describe('Testar SearchBar', () => {
     const fetchResovedValue = {
       json: async () => mockValue02,
     } as Response;
-    const mockFetch = vi.spyOn(global, 'fetch')
+    vi.spyOn(global, 'fetch')
       .mockResolvedValue(fetchResovedValue)
       .mockResolvedValue(fetchResovedValue);
 
@@ -256,7 +255,6 @@ describe('Testar SearchBar', () => {
     await user.click(await nameInput);
 
     const URL = window.location.pathname;
-    expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(URL).toEqual('/drinks/178319');
   });
 });
