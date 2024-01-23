@@ -258,7 +258,8 @@ describe('Testar SearchBar', () => {
     const URL = window.location.pathname;
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(URL).toEqual('/drinks/178319');
-
+     });
+ });
 describe('Testar Footer', () => {
   test('Verificar se o botão de drinks redireciona para a página correta', async () => {
     const { user } = renderWithRouter(<App />, { route: '/meals' });
