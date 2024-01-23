@@ -64,7 +64,7 @@ describe('Testar a tela inicial de login', () => {
 
 describe('Testar Header', () => {
   renderWithRouter(<App />, { route: '/meals' });
-  test('Verificar se o butão de perfil está funcionndo corretamente', async () => {
+  test('Verificar se o botão de perfil está funcionndo corretamente', async () => {
     const { user } = renderWithRouter(<App />, { route: '/meals' });
     screen.findByRole('heading', {
       name: /meals/i,
@@ -77,7 +77,7 @@ describe('Testar Header', () => {
       name: /profile/i,
     });
   });
-  test('Verificar se o butão de search está funcionndo corretamente', async () => {
+  test('Verificar se o botão de search está funcionndo corretamente', async () => {
     const { user } = renderWithRouter(<App />, { route: '/meals' });
 
     const searchBbtn = screen.getByRole('button', {
@@ -103,5 +103,25 @@ describe('Testar Header', () => {
     screen.findByRole('heading', {
       name: /Drinks/i,
     });
+  });
+});
+
+describe('Testar Footer', () => {
+  test('Verificar se o botão de drinks redireciona para a página correta', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+
+    const drinksButton = screen.getByTestId('drinks-bottom-btn');
+    await user.click(drinksButton);
+
+    expect(window.location.pathname).toBe('/drinks');
+  });
+
+  test('Verificar se o botão de meals redireciona para a página correta', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/drinks' });
+
+    const mealsButton = screen.getByTestId('meals-bottom-btn');
+    await user.click(mealsButton);
+
+    expect(window.location.pathname).toBe('/meals');
   });
 });

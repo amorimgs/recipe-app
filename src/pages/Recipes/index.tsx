@@ -1,3 +1,4 @@
+import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 
 function Recipes() {
@@ -5,6 +6,7 @@ function Recipes() {
     <div>
       <Header />
       <h1>Receitas</h1>
+      <Footer />
     </div>
   );
 }
