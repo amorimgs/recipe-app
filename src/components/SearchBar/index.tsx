@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function SearchBar() {
-  const [searchInput, setSearchInput] = useState('');
-  const [searchType, setSearchType] = useState('Ingredient');
-
+  const [searchInput, setSearchInput] = React.useState('');
+  const [searchType, setSearchType] = React.useState('Ingredient');
+  const [searchResults, setSearchResults] = React.useState<any>([]);
+  const location = useLocation();
+  const navigate = useNavigate();
   const handleSearchTypeChange = (event: any) => {
     setSearchType(event.target.value);
   };
@@ -13,31 +16,41 @@ function SearchBar() {
 
     switch (searchType) {
       case 'Ingredient':
-        endpoint = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchInput}`;
+        endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/filter.php?i=${searchInput}`;
         break;
       case 'Name':
-        endpoint = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInput}`;
+        endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/search.php?s=${searchInput}`;
         break;
       case 'First letter':
         if (searchInput.length === 1) {
-          endpoint = `https://www.themealdb.com/api/json/v1/1/search.php?f=${searchInput}`;
+          endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/search.php?f=${searchInput}`;
         } else {
           window.alert('Your search must have only 1 (one) character');
           return;
         }
         break;
-      default:
-        break;
+         // no default
     }
 
-    try {
-      const response = await fetch(endpoint);
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    console.log(data);
+
+    if (data.meals === null || data.drinks === null) {
+      setSearchResults(null);
+      return;
     }
+    setSearchResults(data.meals || data.drinks);
   };
+
+  React.useEffect(() => {
+    if (searchResults === null) {
+      window.alert("Sorry, we haven't found any recipes for these filters");
+    } else if (searchResults.length === 1) {
+      navigate(`${location.pathname}/${searchResults[0].idMeal
+        || searchResults[0].idDrink}`);
+    }
+  }, [location.pathname, navigate, searchResults]);
 
   return (
     <div>

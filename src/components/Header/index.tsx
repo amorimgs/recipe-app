@@ -25,8 +25,7 @@ function Header() {
       case '/favorite-recipes':
         setTitle('Favorite Recipes');
         break;
-      default:
-        break;
+      // no default
     }
   }, [location.pathname]);
 
