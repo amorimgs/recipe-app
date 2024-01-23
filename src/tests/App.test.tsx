@@ -61,3 +61,47 @@ describe('Testar a tela inicial de login', () => {
     expect(window.localStorage.getItem('user')).toEqual(JSON.stringify(userLS));
   });
 });
+
+describe('Testar Header', () => {
+  renderWithRouter(<App />, { route: '/meals' });
+  test('Verificar se o butão de perfil está funcionndo corretamente', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+    screen.findByRole('heading', {
+      name: /meals/i,
+    });
+    const profileBbtn = screen.getAllByRole('link', {
+      name: /iconeperfil/i,
+    });
+    await user.click(profileBbtn[0]);
+    screen.findByRole('heading', {
+      name: /profile/i,
+    });
+  });
+  test('Verificar se o butão de search está funcionndo corretamente', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+
+    const searchBbtn = screen.getByRole('button', {
+      name: /searchicon/i,
+    });
+    await user.click(searchBbtn);
+    screen.getByRole('textbox');
+  });
+  test('Verifica Title Done Recipes', async () => {
+    renderWithRouter(<App />, { route: '/done-recipes' });
+    screen.findByRole('heading', {
+      name: /Done Recipes/i,
+    });
+  });
+  test('Verifica Title Favorite Recipes', async () => {
+    renderWithRouter(<App />, { route: '/favorite-recipes' });
+    screen.findByRole('heading', {
+      name: /Favorite Recipes/i,
+    });
+  });
+  test('Verifica Title Drinks', async () => {
+    renderWithRouter(<App />, { route: '/drinks' });
+    screen.findByRole('heading', {
+      name: /Drinks/i,
+    });
+  });
+});
