@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 import App from '../App';
 
 const renderWithRouter = (ui: JSX.Element, { route = '/' } = {}) => {
@@ -106,6 +107,159 @@ describe('Testar Header', () => {
   });
 });
 
+describe('Testar SearchBar', () => {
+  const esb = 'exec-search-btn';
+  test('Verificar inputs searchBar meals', async () => {
+    const mockValue = {
+      meals: null,
+    };
+
+    const fetchResovedValue = {
+      json: async () => mockValue,
+    } as Response;
+    vi.spyOn(global, 'fetch')
+      .mockResolvedValue(fetchResovedValue);
+
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+    const searchBbtn = screen.getByRole('button', {
+      name: /searchicon/i,
+    });
+    await user.click(searchBbtn);
+
+    const execSearchBTN = screen.getByTestId(esb);
+    const ingredientInput = screen.findByRole('radio', {
+      name: /ingredient/i,
+    });
+    await user.click(await ingredientInput);
+    await user.click(execSearchBTN);
+    const nameInput = screen.findByRole('radio', {
+      name: /name/i,
+    });
+    await user.click(await nameInput);
+    await user.click(execSearchBTN);
+    const fistLeterInput = screen.findByRole('radio', {
+      name: /first letter/i,
+    });
+    await user.click(await fistLeterInput);
+    await user.click(execSearchBTN);
+  });
+
+  test('Verificar inputs searchBar drinks', async () => {
+    const mockValue = {
+      meals: null,
+    };
+
+    const fetchResovedValue = {
+      json: async () => mockValue,
+    } as Response;
+    vi.spyOn(global, 'fetch')
+      .mockResolvedValue(fetchResovedValue);
+
+    const { user } = renderWithRouter(<App />, { route: '/drinks' });
+    const searchBbtn = screen.getByRole('button', {
+      name: /searchicon/i,
+    });
+    await user.click(searchBbtn);
+
+    const execSearchBTN = screen.getByTestId(esb);
+    const ingredientInput = screen.findByRole('radio', {
+      name: /ingredient/i,
+    });
+    await user.click(await ingredientInput);
+    await user.click(execSearchBTN);
+    const nameInput = screen.findByRole('radio', {
+      name: /name/i,
+    });
+    await user.click(await nameInput);
+    await user.click(execSearchBTN);
+    const fistLeterInput = screen.findByRole('radio', {
+      name: /first letter/i,
+    });
+    await user.click(await fistLeterInput);
+    await user.click(execSearchBTN);
+  });
+
+  test('Verificar redicionamentos searchBar', async () => {
+    const mockValue01 = {
+      meals: [{
+        idMeal: '52771',
+      }],
+    };
+
+    const fetchResovedValue = {
+      json: async () => mockValue01,
+    } as Response;
+    const mockFetch = vi.spyOn(global, 'fetch')
+      .mockResolvedValue(fetchResovedValue)
+      .mockResolvedValue(fetchResovedValue);
+
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+    const searchIcon = screen.getByRole('button', {
+      name: /searchicon/i,
+    });
+    await user.click(searchIcon);
+
+    const execSearchBTN = screen.getByTestId(esb);
+    const inputText = screen.getByTestId('search-input');
+    const fistLeterInput = screen.findByRole('radio', {
+      name: /first letter/i,
+    });
+    const nameInput = screen.findByRole('radio', {
+      name: /name/i,
+    });
+
+    await user.click(await fistLeterInput);
+    await user.type(inputText, 'a');
+    await user.click(execSearchBTN);
+
+    await user.type(inputText, 'Arrabiata');
+    await user.click(await nameInput);
+    const URL = window.location.pathname;
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(URL).toEqual('/meals/52771');
+  });
+
+  test('Verificar redicionamentos searchBar drinks', async () => {
+    const mockValue02 = {
+      drinks: [{
+        idDrink: '178319',
+      }],
+    };
+
+    const fetchResovedValue = {
+      json: async () => mockValue02,
+    } as Response;
+    const mockFetch = vi.spyOn(global, 'fetch')
+      .mockResolvedValue(fetchResovedValue)
+      .mockResolvedValue(fetchResovedValue);
+
+    const { user } = renderWithRouter(<App />, { route: '/drinks' });
+    const searchIcon = screen.getByRole('button', {
+      name: /searchicon/i,
+    });
+    await user.click(searchIcon);
+
+    const execSearchBTN = screen.getByTestId(esb);
+    const inputText = screen.getByTestId('search-input');
+    const fistLeterInput = screen.findByRole('radio', {
+      name: /first letter/i,
+    });
+    const nameInput = screen.findByRole('radio', {
+      name: /name/i,
+    });
+
+    await user.click(await fistLeterInput);
+    await user.type(inputText, 'a');
+    await user.click(execSearchBTN);
+
+    await user.type(inputText, 'Arrabiata');
+    await user.click(await nameInput);
+
+    const URL = window.location.pathname;
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(URL).toEqual('/drinks/178319');
+  });
+});
 describe('Testar Footer', () => {
   test('Verificar se o botão de drinks redireciona para a página correta', async () => {
     const { user } = renderWithRouter(<App />, { route: '/meals' });
