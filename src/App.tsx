@@ -1,26 +1,29 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import rockGlass from './images/rockGlass.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login';
-import Meals from './pages/Meals';
-import './App.css';
+import Recipes from './pages/Recipes';
+import RecipeDetails from './pages/RecipeDetails';
+import RecipeInProgress from './pages/RecipeInProgress';
+import DoneRecipes from './pages/DoneRecipes';
+import FavoriteRecipes from './pages/FavoritesRecipes';
+import Profile from './pages/Profile';
 
 function App() {
   return (
     <div className="meals">
       <Routes>
         <Route path="/" element={ <Login /> } />
-        <Route path="/meals" element={ <Meals /> } />
+        <Route path="/meals" element={ <Recipes /> } />
+        <Route path="/drinks" element={ <Recipes /> } />
+        <Route path="/meals/:id" element={ <RecipeDetails /> } />
+        <Route path="/drinks/:id" element={ <RecipeDetails /> } />
+        <Route path="/meals/:id/in-progress" element={ <RecipeInProgress /> } />
+        <Route path="/drinks/:id/in-progress" element={ <RecipeInProgress /> } />
+        <Route path="/done-recipes" element={ <DoneRecipes /> } />
+        <Route path="/favorite-recipes" element={ <FavoriteRecipes /> } />
+        <Route path="/profile" element={ <Profile /> } />
       </Routes>
-      <span className="logo">TRYBE - GROUP 14</span>
-      <object
-        className="rocksGlass"
-        type="image/svg+xml"
-        data={ rockGlass }
-      >
-        Glass
-      </object>
     </div>
   );
 }
