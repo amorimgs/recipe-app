@@ -189,7 +189,7 @@ describe('Testar SearchBar', () => {
     const fetchResovedValue = {
       json: async () => mockValue01,
     } as Response;
-    const mockFetch = vi.spyOn(global, 'fetch')
+    vi.spyOn(global, 'fetch')
       .mockResolvedValue(fetchResovedValue)
       .mockResolvedValue(fetchResovedValue);
 
@@ -228,7 +228,7 @@ describe('Testar SearchBar', () => {
     const fetchResovedValue = {
       json: async () => mockValue02,
     } as Response;
-    const mockFetch = vi.spyOn(global, 'fetch')
+    vi.spyOn(global, 'fetch')
       .mockResolvedValue(fetchResovedValue)
       .mockResolvedValue(fetchResovedValue);
 
