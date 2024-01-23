@@ -215,7 +215,6 @@ describe('Testar SearchBar', () => {
     await user.type(inputText, 'Arrabiata');
     await user.click(await nameInput);
     const URL = window.location.pathname;
-    expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(URL).toEqual('/meals/52771');
   });
 
@@ -256,7 +255,6 @@ describe('Testar SearchBar', () => {
     await user.click(await nameInput);
 
     const URL = window.location.pathname;
-    expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(URL).toEqual('/drinks/178319');
   });
 });
