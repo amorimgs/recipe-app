@@ -4,7 +4,7 @@ import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import Header from '../../components/Header';
 
-type RecipeType = {
+type RecipeDetailsType = {
   id: string,
   type: string,
   nationality: string,
@@ -17,7 +17,7 @@ type RecipeType = {
 };
 
 function FavoriteRecipes() {
-  const [recipesDone, setRecipesDone] = useState<RecipeType[]>([]);
+  const [recipesDone, setRecipesDone] = useState<RecipeDetailsType[]>([]);
   const [filter, setFilter] = useState('all');
   const [shareMessage, setShareMessage] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -26,7 +26,7 @@ function FavoriteRecipes() {
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes') ?? '[]');
     setRecipesDone(favoriteRecipes);
-    const favoritesArray = favoriteRecipes.map((recipe: RecipeType) => recipe.id);
+    const favoritesArray = favoriteRecipes.map((recipe: RecipeDetailsType) => recipe.id);
     setFavorites(favoritesArray);
   }, []);
 
@@ -41,7 +41,7 @@ function FavoriteRecipes() {
         || (RecipeFilter === 'drinks' && recipe.alcoholicOrNot)
     ));
 
-  const copyText = async (recipe: RecipeType) => {
+  const copyText = async (recipe: RecipeDetailsType) => {
     const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
 
     try {
@@ -52,7 +52,7 @@ function FavoriteRecipes() {
     }
   };
 
-  const toggleFavorite = (recipe: RecipeType) => {
+  const toggleFavorite = (recipe: RecipeDetailsType) => {
     const recipeId = recipe.id;
     const isFavorite = favorites.includes(recipeId);
 
@@ -118,7 +118,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-share-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-share-btn` }
+                    data-testid={ `${index}-horizontal-share-icon` }
                     src={ shareIcon }
                     alt="ícone do botão compartilhar"
                   />
@@ -128,7 +128,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-favorite-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-favorite-btn` }
+                    data-testid={ `${index}-horizontal-favorite-icon` }
                     src={ blackHeartIcon }
                     alt="ícone do botão favoritar"
                   />
