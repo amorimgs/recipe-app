@@ -115,20 +115,18 @@ function FavoriteRecipes() {
                 </p>
                 <button
                   onClick={ () => copyText(recipe) }
-                  data-testid={ `${index}-horizontal-share-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-share-icon` }
+                    data-testid={ `${index}-horizontal-share-btn` }
                     src={ shareIcon }
                     alt="ícone do botão compartilhar"
                   />
                 </button>
                 <button
                   onClick={ () => toggleFavorite(recipe) }
-                  data-testid={ `${index}-horizontal-favorite-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-favorite-icon` }
+                    data-testid={ `${index}-horizontal-favorite-btn` }
                     src={ blackHeartIcon }
                     alt="ícone do botão favoritar"
                   />
@@ -142,20 +140,18 @@ function FavoriteRecipes() {
                 </p>
                 <button
                   onClick={ () => copyText(recipe) }
-                  data-testid={ `${index}-horizontal-share-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-share-icon` }
+                    data-testid={ `${index}-horizontal-share-btn` }
                     src={ shareIcon }
                     alt="ícone do botão compartilhar"
                   />
                 </button>
                 <button
                   onClick={ () => toggleFavorite(recipe) }
-                  data-testid={ `${index}-horizontal-favorite-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-favorite-icon` }
+                    data-testid={ `${index}-horizontal-favorite-btn` }
                     src={ blackHeartIcon }
                     alt="ícone do botão favoritar"
                   />
