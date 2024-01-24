@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
+import Header from '../components/Header';
 
 type RecipeType = {
   id: string,
@@ -67,6 +68,7 @@ function FavoriteRecipes() {
 
   return (
     <div>
+      <Header />
       <button
         onClick={ () => {
           setFilter('all');
