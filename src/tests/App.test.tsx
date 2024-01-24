@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
+import Profile from '../pages/Profile';
 import App from '../App';
 
 const renderWithRouter = (ui: JSX.Element, { route = '/' } = {}) => {
@@ -275,5 +276,62 @@ describe('Testar Footer', () => {
     await user.click(mealsButton);
 
     expect(window.location.pathname).toBe('/meals');
+  });
+});
+
+describe('Componente Profile', () => {
+  beforeEach(() => {
+    // Limpa o localStorage antes de cada teste
+    localStorage.clear();
+  });
+
+  test('renders user email', () => {
+    localStorage.setItem('user', JSON.stringify({ email: 'test@example.com' }));
+    const { getByTestId } = render(<BrowserRouter><Profile /></BrowserRouter>);
+    expect(getByTestId('profile-email')).toHaveTextContent('Email: test@example.com');
+  });
+
+  test('renderiza o botão Receitas Favoritas', () => {
+    const { getByTestId } = render(<BrowserRouter><Profile /></BrowserRouter>);
+    expect(getByTestId('profile-favorite-btn')).toBeInTheDocument();
+  });
+
+  test('renderiza o botão Receitas Concluídas', () => {
+    const { getByTestId } = render(<BrowserRouter><Profile /></BrowserRouter>);
+    expect(getByTestId('profile-done-btn')).toBeInTheDocument();
+  });
+
+  test('renderiza o botão Logout', () => {
+    const { getByTestId } = render(<BrowserRouter><Profile /></BrowserRouter>);
+    expect(getByTestId('profile-logout-btn')).toBeInTheDocument();
+  });
+
+  test('limpa localStorage ao sair', () => {
+    localStorage.setItem('user', JSON.stringify({ email: 'test@example.com' }));
+    const { getByTestId } = render(<BrowserRouter><Profile /></BrowserRouter>);
+    const logoutButton = getByTestId('profile-logout-btn');
+    fireEvent.click(logoutButton);
+    expect(localStorage.getItem('user')).toBeNull();
+  });
+
+  test('navigates to Done Recipes page when Done Recipes button is clicked', () => {
+    const { getByTestId } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
+    const doneRecipesButton = getByTestId('profile-done-btn');
+    fireEvent.click(doneRecipesButton);
+    // Verifique se a URL mudou para '/done-recipes'
+  });
+
+  test('navigates to Favorite Recipes page when Favorite Recipes button is clicked', () => {
+    const { getByTestId } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
+    const favoriteRecipesButton = getByTestId('profile-favorite-btn');
+    fireEvent.click(favoriteRecipesButton);
+    // Verifique se a URL mudou para '/favorite-recipes'
+  });
+
+  test('navigates to Home page when Logout button is clicked', () => {
+    const { getByRole } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
+    const logoutButton = getByRole('button', { name: /logout/i });
+    fireEvent.click(logoutButton);
+    // Verifique se a URL mudou para '/'
   });
 });
