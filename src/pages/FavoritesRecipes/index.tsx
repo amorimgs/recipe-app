@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
+import Header from '../../components/Header';
 
 type RecipeType = {
   id: string,
@@ -67,6 +68,7 @@ function FavoriteRecipes() {
 
   return (
     <div>
+      <Header />
       <button
         onClick={ () => {
           setFilter('all');
@@ -116,7 +118,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-share-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-share-btn` }
+                    data-testid={ `${index}-horizontal-share-icon` }
                     src={ shareIcon }
                     alt="ícone do botão compartilhar"
                   />
@@ -126,7 +128,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-favorite-btn` }
                 >
                   <img
-                    data-testid={ `${index}-horizontal-favorite-btn` }
+                    data-testid={ `${index}-horizontal-favorite-icon` }
                     src={ blackHeartIcon }
                     alt="ícone do botão favoritar"
                   />
