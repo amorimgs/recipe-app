@@ -26,7 +26,6 @@ function SearchBar() {
           endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/search.php?f=${searchInput}`;
         } else {
           window.alert('Your search must have only 1 (one) character');
-          return;
         }
         break;
          // no default
@@ -34,7 +33,6 @@ function SearchBar() {
 
     const response = await fetch(endpoint);
     const data = await response.json();
-    console.log(data);
 
     if (data.meals === null || data.drinks === null) {
       setSearchResults(null);

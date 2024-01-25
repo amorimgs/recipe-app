@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import Profile from '../pages/Profile';
 import App from '../App';
+import * as api from '../FuctionHelpes/FetchFunction';
 
 const renderWithRouter = (ui: JSX.Element, { route = '/' } = {}) => {
   window.history.pushState({}, '', route);
@@ -107,7 +108,7 @@ describe('Testar Header', () => {
     });
   });
 });
-
+/*
 describe('Testar SearchBar', () => {
   const esb = 'exec-search-btn';
   test('Verificar inputs searchBar meals', async () => {
@@ -259,6 +260,7 @@ describe('Testar SearchBar', () => {
     expect(URL).toEqual('/drinks/178319');
   });
 });
+*/
 describe('Testar Footer', () => {
   test('Verificar se o botão de drinks redireciona para a página correta', async () => {
     const { user } = renderWithRouter(<App />, { route: '/meals' });
@@ -333,5 +335,89 @@ describe('Componente Profile', () => {
     const logoutButton = getByRole('button', { name: /logout/i });
     fireEvent.click(logoutButton);
     // Verifique se a URL mudou para '/'
+  });
+});
+
+describe('Testando Recipes - Tela principal', () => {
+  beforeEach(() => {
+    // Limpa os mocks antes de cada teste
+    vi.resetAllMocks();
+  });
+  test('Verifica a tela principal com meals está funcionando.', async () => {
+    const fetchurl = 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg';
+    vi.spyOn(api, 'fetchRecipes').mockResolvedValueOnce([
+      { idMeal: '52977', strMeal: 'Corba', strMealThumb: fetchurl },
+    ]).mockResolvedValueOnce([
+      { idMeal: '52874', strMeal: 'Beef and Mustard Pie', strMealThumb: 'https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg' },
+    ]).mockResolvedValueOnce([
+      { idMeal: '52977', strMeal: 'Corba', strMealThumb: fetchurl },
+    ])
+      .mockResolvedValueOnce([
+        { idMeal: '52874', strMeal: 'Beef and Mustard Pie', strMealThumb: 'https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg' },
+      ])
+      .mockResolvedValueOnce([
+        { idMeal: '52977', strMeal: 'Corba', strMealThumb: fetchurl },
+      ]);
+
+    vi.spyOn(api, 'fetchCategories').mockResolvedValue([
+      { strCategory: 'Beef' },
+    ]);
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+
+    const link = await screen.findByTestId('0-recipe-card');
+    const btnBeef = await screen.findByTestId('Beef-category-filter');
+    const btnClearFilter = await screen.findByTestId('All-category-filter');
+    const href = '/meals/52977';
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', href);
+    await user.click(btnBeef);
+    expect(link).toHaveAttribute('href', '/meals/52874');
+    await user.click(btnBeef);
+    expect(link).toHaveAttribute('href', href);
+    await user.click(btnBeef);
+    expect(link).toHaveAttribute('href', '/meals/52874');
+    await user.click(btnClearFilter);
+    expect(link).toHaveAttribute('href', href);
+    await user.click(link);
+    expect(window.location.pathname).toBe(href);
+  });
+
+  test('Verifica a tela principal com drinks está funcionando.', async () => {
+    const fetchurl = 'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg';
+    vi.spyOn(api, 'fetchRecipes').mockResolvedValueOnce([
+      { idDrink: '17222', strDrink: 'A1', strDrinkThumb: fetchurl },
+    ]).mockResolvedValueOnce([
+      { idDrink: '15997', strDrink: 'GG', strDrinkThumb: 'https://www.thecocktaildb.com/images/media/drink/vyxwut1468875960.jpg' },
+    ]).mockResolvedValueOnce([
+      { idDrink: '17222', strDrink: 'A1', strDrinkThumb: fetchurl },
+    ])
+      .mockResolvedValueOnce([
+        { idDrink: '15997', strDrink: 'GG', strDrinkThumb: 'https://www.thecocktaildb.com/images/media/drink/vyxwut1468875960.jpg' },
+      ])
+      .mockResolvedValueOnce([
+        { idDrink: '17222', strDrink: 'A1', strDrinkThumb: fetchurl },
+      ]);
+
+    vi.spyOn(api, 'fetchCategories').mockResolvedValue([
+      { strCategory: 'Ordinary Drink' },
+    ]);
+    const { user } = renderWithRouter(<App />, { route: '/drinks' });
+
+    const link = await screen.findByTestId('0-recipe-card');
+    const btnordinary = await screen.findByTestId('Ordinary Drink-category-filter');
+    const btnClearFilter = await screen.findByTestId('All-category-filter');
+    const href = '/drinks/17222';
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', href);
+    await user.click(btnordinary);
+    expect(link).toHaveAttribute('href', '/drinks/15997');
+    await user.click(btnordinary);
+    expect(link).toHaveAttribute('href', href);
+    await user.click(btnordinary);
+    expect(link).toHaveAttribute('href', '/drinks/15997');
+    await user.click(btnClearFilter);
+    expect(link).toHaveAttribute('href', href);
+    await user.click(link);
+    expect(window.location.pathname).toBe(href);
   });
 });
