@@ -11,7 +11,7 @@ function RecipeCard({ data }: { data: any }) {
   return (
     <div>
       <div>
-        {recipes.map((recipe:any, index:number) => (
+        {recipes && recipes.length > 0 && recipes.map((recipe:any, index:number) => (
           <Link
             to={ `${pathname}/${recipe[keyId]}` }
             key={ index }

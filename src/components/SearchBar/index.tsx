@@ -1,54 +1,38 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { searchRecipes } from '../../FuctionHelpes/FetchFunction';
+import Context from '../../context/Context';
 
 function SearchBar() {
   const [searchInput, setSearchInput] = React.useState('');
   const [searchType, setSearchType] = React.useState('Ingredient');
-  const [searchResults, setSearchResults] = React.useState<any>([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { recipes, setRecipes } = useContext(Context);
+
   const handleSearchTypeChange = (event: any) => {
     setSearchType(event.target.value);
   };
 
-  const searchRecipes = async () => {
-    let endpoint = '';
-
-    switch (searchType) {
-      case 'Ingredient':
-        endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/filter.php?i=${searchInput}`;
-        break;
-      case 'Name':
-        endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/search.php?s=${searchInput}`;
-        break;
-      case 'First letter':
-        if (searchInput.length === 1) {
-          endpoint = `https://www.${location.pathname === '/meals' ? 'themealdb' : 'thecocktaildb'}.com/api/json/v1/1/search.php?f=${searchInput}`;
-        } else {
-          window.alert('Your search must have only 1 (one) character');
-        }
-        break;
-         // no default
+  React.useEffect(() => {
+    if (recipes) {
+      if (recipes.length === 0) {
+        window.alert("Sorry, we haven't found any recipes for these filters");
+      } else if (recipes.length === 1) {
+        navigate(`${location.pathname}/${recipes[0].idMeal
+          || recipes[0].idDrink}`);
+      }
     }
+  }, [location.pathname, navigate, recipes]);
 
-    const response = await fetch(endpoint);
-    const data = await response.json();
-
+  const handleClick = async () => {
+    const data = await searchRecipes(searchType, location, searchInput);
     if (data.meals === null || data.drinks === null) {
-      setSearchResults(null);
+      setRecipes([]);
       return;
     }
-    setSearchResults(data.meals || data.drinks);
+    setRecipes(data.meals || data.drinks);
   };
-
-  React.useEffect(() => {
-    if (searchResults === null) {
-      window.alert("Sorry, we haven't found any recipes for these filters");
-    } else if (searchResults.length === 1) {
-      navigate(`${location.pathname}/${searchResults[0].idMeal
-        || searchResults[0].idDrink}`);
-    }
-  }, [location.pathname, navigate, searchResults]);
 
   return (
     <div>
@@ -92,7 +76,7 @@ function SearchBar() {
         />
         First letter
       </label>
-      <button type="button" onClick={ searchRecipes } data-testid="exec-search-btn">
+      <button type="button" onClick={ handleClick } data-testid="exec-search-btn">
         Search
       </button>
     </div>
