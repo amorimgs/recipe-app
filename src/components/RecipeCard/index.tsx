@@ -1,15 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// interface Recipe {
-//   idMeal?: string;
-//   idDrink?: string;
-//   strMealThumb?: string;
-//   strDrinkThumb?: string;
-//   strMeal?: string;
-//   strDrink?: string;
-// }
-
 function RecipeCard({ data }: { data: any }) {
   const [recipes, setRecipes] = React.useState<any>([]);
   const { pathname } = window.location;
@@ -20,7 +11,7 @@ function RecipeCard({ data }: { data: any }) {
   return (
     <div>
       <div>
-        {recipes.map((recipe:any, index:number) => (
+        {recipes && recipes.length > 0 && recipes.map((recipe:any, index:number) => (
           <Link
             to={ `${pathname}/${recipe[keyId]}` }
             key={ index }
