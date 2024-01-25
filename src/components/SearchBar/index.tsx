@@ -19,19 +19,24 @@ function SearchBar() {
       if (recipes.length === 0) {
         window.alert("Sorry, we haven't found any recipes for these filters");
       } else if (recipes.length === 1) {
-        navigate(`${location.pathname}/${recipes[0].idMeal
-          || recipes[0].idDrink}`);
+        const urlNavigate = location.pathname === '/meals'
+          ? `${location.pathname}/${recipes[0].idMeal}`
+          : `${location.pathname}/${recipes[0].idDrink}`;
+        navigate(urlNavigate);
       }
     }
   }, [location.pathname, navigate, recipes]);
 
   const handleClick = async () => {
+    const locationFormated = location.pathname.replace('/', '');
     const data = await searchRecipes(searchType, location, searchInput);
-    if (data.meals === null || data.drinks === null) {
+    console.log(data);
+    if (data === undefined || data[locationFormated] === null) {
+      window.alert('Sorry, we haven\'t found any recipes for these filters');
       setRecipes([]);
       return;
     }
-    setRecipes(data.meals || data.drinks);
+    setRecipes(data[locationFormated]);
   };
 
   return (

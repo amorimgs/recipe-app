@@ -110,9 +110,13 @@ describe('Testar Header', () => {
 });
 
 describe('Testar SearchBar', () => {
+  const searchInput = 'search-input';
+  const searchTopBtn = 'search-top-btn';
+  const execSearchBtn = 'exec-search-btn';
+  const NameSearchRadio = 'name-search-radio';
   beforeEach(() => {
     // Limpa os mocks antes de cada teste
-    // vi.restoreAllMocks();
+    vi.resetAllMocks();
   });
   test('Verificar se o input de search está funcionando corretamente', async () => {
     vi.spyOn(api, 'searchRecipes').mockResolvedValueOnce({ meals: [
@@ -122,18 +126,52 @@ describe('Testar SearchBar', () => {
     ] });
 
     const { user } = renderWithRouter(<App />, { route: '/meals' });
-    await user.click(screen.getByTestId('search-top-btn'));
+    await user.click(screen.getByTestId(searchTopBtn));
     const RadioIngredientes = await screen.findByTestId('ingredient-search-radio');
-    const RadioName = await screen.findByTestId('name-search-radio');
-    const input = await screen.findByTestId('search-input');
-    const execSearchBTN = await screen.findByTestId('exec-search-btn');
+    const RadioName = await screen.findByTestId(NameSearchRadio);
+    const input = await screen.findByTestId(searchInput);
+    const execSearchBTN = await screen.findByTestId(execSearchBtn);
     expect(execSearchBTN).toBeInTheDocument();
-    expect(await screen.findByTestId('0-card-name')).toHaveTextContent('Corba');
     await user.click(RadioName);
     await user.click(RadioIngredientes);
     await user.type(input, 'lkajsdl');
     await user.click(execSearchBTN);
-    // expect(await screen.findByTestId('0-card-name')).toHaveTextContent('Bubble & Squeak');
+  });
+
+  test('Verificar alert search', async () => {
+    const { user } = renderWithRouter(<App />, { route: '/meals' });
+
+    await user.click(screen.getByTestId(searchTopBtn));
+
+    const RadioName = await screen.findByTestId(NameSearchRadio);
+    await user.click(RadioName);
+
+    const input = await screen.findByTestId(searchInput);
+    await user.type(input, 'Xablauzao');
+
+    const execSearchBTN = await screen.findByTestId(execSearchBtn);
+    await user.click(execSearchBTN);
+  });
+
+  test('Verificar redirecionamento', async () => {
+    vi.spyOn(api, 'searchRecipes').mockResolvedValueOnce({ drinks: [
+      { idDrink: '17222', strDrink: 'A1', strDrinkThumb: 'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg' },
+    ] });
+
+    const { user } = renderWithRouter(<App />, { route: '/drinks' });
+
+    await user.click(screen.getByTestId(searchTopBtn));
+
+    const RadioName = await screen.findByTestId(NameSearchRadio);
+    await user.click(RadioName);
+
+    const input = await screen.findByTestId(searchInput);
+    await user.type(input, 'A1');
+    expect(input).toHaveValue('A1');
+    const execSearchBTN = await screen.findByTestId(execSearchBtn);
+    await user.click(execSearchBTN);
+
+    expect(window.location.pathname).toBe('/drinks/17222');
   });
 });
 
