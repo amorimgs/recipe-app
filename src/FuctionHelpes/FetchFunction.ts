@@ -59,3 +59,11 @@ export const searchRecipes = async (
     return data;
   }
 };
+
+// Função específica para o buscar Details
+export const fetchDetails = async (pathname:string, urlDetails:string) => {
+  const response = await fetchData(urlDetails);
+  if (response && response[pathname]) {
+    return response[pathname][0];
+  }
+};
