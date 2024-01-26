@@ -12,8 +12,7 @@ function RecipeDetails() {
     meansure: [],
   });
   const [recommendation, setRecommendation] = React.useState<any>(null);
-  /* const [inProgress, setInProgress] = React.useState<boolean>(false);
-  */
+  const [inProgress, setInProgress] = React.useState<boolean>(false);
   const [copy, setCopy] = React.useState<boolean>(false);
   const [favorite, setFavorite] = React.useState<boolean>(false);
   const navigate = useNavigate();
@@ -73,18 +72,15 @@ function RecipeDetails() {
         return favoriteRecipes.find((el:any) => el.id === idRecipe);
       }
     });
-    /*
     const checkProgress = () => {
       const inProgressRecipes = window.localStorage.getItem('inProgressRecipes');
+      console.log(inProgressRecipes);
       if (inProgressRecipes) {
-        const inProgressRecipesArray = JSON.parse(inProgressRecipes);
-        const bolean = Object.keys(inProgressRecipesArray[pathname]).includes(idRecipe);
-        console.log(bolean);
+        const bolean = JSON.parse(inProgressRecipes)[pathname][idRecipe];
         setInProgress(bolean);
       }
     };
     checkProgress();
-    */
     fetchRecommendation();
     fetchRecipesDetails();
   }, [idRecipe, location, pathname]);
@@ -208,7 +204,7 @@ function RecipeDetails() {
           data-testid="start-recipe-btn"
           onClick={ handleClick }
         >
-          Start Recipe
+          {inProgress ? 'Continue Recipe' : 'Start Recipe'}
         </button>
         {copy && <h2>Link copied!</h2>}
       </div>
