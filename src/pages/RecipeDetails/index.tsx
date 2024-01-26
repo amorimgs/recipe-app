@@ -188,7 +188,7 @@ function RecipeDetails() {
               }, 2000);
             } }
           >
-            <img data-testid="share-btn" src={ ShareIcon } alt="" />
+            <img data-testid="share-btn" src={ ShareIcon } alt="ShareIcon" />
           </button>
           <button
             onClick={ () => {
@@ -199,7 +199,7 @@ function RecipeDetails() {
             <img
               data-testid="favorite-btn"
               src={ favorite ? BlackHeartIcon : WhiteHeartIcon }
-              alt=""
+              alt="FavoriteIcon"
             />
           </button>
         </div>
