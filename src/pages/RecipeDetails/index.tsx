@@ -14,6 +14,7 @@ function RecipeDetails() {
   const [recommendation, setRecommendation] = React.useState<any>(null);
   const [inProgress, setInProgress] = React.useState<boolean>(false);
   const [copy, setCopy] = React.useState<boolean>(false);
+  const [done, setDone] = React.useState<boolean>(false);
   const [favorite, setFavorite] = React.useState<boolean>(false);
   const navigate = useNavigate();
   const location = window.location.pathname;
@@ -74,12 +75,21 @@ function RecipeDetails() {
     });
     const checkProgress = () => {
       const inProgressRecipes = window.localStorage.getItem('inProgressRecipes');
-      console.log(inProgressRecipes);
       if (inProgressRecipes) {
         const bolean = JSON.parse(inProgressRecipes)[pathname][idRecipe];
         setInProgress(bolean);
       }
     };
+    const doneProgress = () => {
+      const favoriteStorage = window.localStorage
+        .getItem('doneRecipes');
+      if (favoriteStorage) {
+        const favoriteRecipes = JSON.parse(favoriteStorage);
+        return favoriteRecipes.find((el:any) => el.id === idRecipe);
+        setDone(true);
+      }
+    };
+    doneProgress();
     checkProgress();
     fetchRecommendation();
     fetchRecipesDetails();
@@ -199,13 +209,14 @@ function RecipeDetails() {
             />
           </button>
         </div>
-        <button
-          style={ { position: 'fixed', bottom: '0' } }
-          data-testid="start-recipe-btn"
-          onClick={ handleClick }
-        >
-          {inProgress ? 'Continue Recipe' : 'Start Recipe'}
-        </button>
+        {!done && (
+          <button
+            style={ { position: 'fixed', bottom: '0' } }
+            data-testid="start-recipe-btn"
+            onClick={ handleClick }
+          >
+            {inProgress ? 'Continue Recipe' : 'Start Recipe'}
+          </button>)}
         {copy && <h2>Link copied!</h2>}
       </div>
 
