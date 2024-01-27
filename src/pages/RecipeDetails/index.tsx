@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchData, fetchDetails } from '../../FuctionHelpes/FetchFunction';
+import { fetchData,
+  fetchDetails, checkFavorite,
+  checkProgress, doneProgress } from '../../FuctionHelpes/FetchFunction';
 import ShareIcon from '../../images/shareIcon.svg';
 import BlackHeartIcon from '../../images/blackHeartIcon.svg';
 import WhiteHeartIcon from '../../images/whiteHeartIcon.svg';
@@ -41,15 +43,6 @@ function RecipeDetails() {
     }
   };
 
-  const checkFavorite = () => {
-    const favoriteStorage = window.localStorage
-      .getItem('favoriteRecipes');
-    if (favoriteStorage) {
-      const favoriteRecipes = JSON.parse(favoriteStorage);
-      return favoriteRecipes.find((el:any) => el.id === idRecipe);
-    }
-  };
-
   React.useEffect(() => {
     const fetchRecipesDetails = async () => {
       const urlDetails = pathname === 'meals' ? `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idRecipe}` : `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${idRecipe}`;
@@ -63,34 +56,14 @@ function RecipeDetails() {
         ? 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s='
         : 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
       const data = await fetchData(urlRecommendation);
-      setRecommendation(data[pathname === 'meals' ? 'drinks' : 'meals']);
-    };
-    setFavorite(() => {
-      const favoriteStorage = window.localStorage
-        .getItem('favoriteRecipes');
-      if (favoriteStorage) {
-        const favoriteRecipes = JSON.parse(favoriteStorage);
-        return favoriteRecipes.find((el:any) => el.id === idRecipe);
-      }
-    });
-    const checkProgress = () => {
-      const inProgressRecipes = window.localStorage.getItem('inProgressRecipes');
-      if (inProgressRecipes) {
-        const bolean = JSON.parse(inProgressRecipes)[pathname][idRecipe];
-        setInProgress(bolean);
+      if (data) {
+        setRecommendation(data[pathname === 'meals' ? 'drinks' : 'meals']);
       }
     };
-    const doneProgress = () => {
-      const favoriteStorage = window.localStorage
-        .getItem('doneRecipes');
-      if (favoriteStorage) {
-        const favoriteRecipes = JSON.parse(favoriteStorage);
-        return favoriteRecipes.find((el:any) => el.id === idRecipe);
-        setDone(true);
-      }
-    };
-    doneProgress();
-    checkProgress();
+
+    setFavorite(checkFavorite(idRecipe));
+    setInProgress(checkProgress(idRecipe, pathname));
+    setDone(doneProgress(idRecipe));
     fetchRecommendation();
     fetchRecipesDetails();
   }, [idRecipe, location, pathname]);
@@ -101,7 +74,7 @@ function RecipeDetails() {
   };
 
   const setFavoriteRecipes = () => {
-    if (checkFavorite()) {
+    if (checkFavorite(idRecipe)) {
       const favoriteStorage = window.localStorage
         .getItem('favoriteRecipes');
       if (favoriteStorage) {
@@ -189,9 +162,6 @@ function RecipeDetails() {
             onClick={ () => {
               navigator.clipboard.writeText(window.location.href);
               setCopy(true);
-              setTimeout(() => {
-                setCopy(false);
-              }, 2000);
             } }
           >
             <img data-testid="share-btn" src={ ShareIcon } alt="ShareIcon" />
@@ -199,7 +169,7 @@ function RecipeDetails() {
           <button
             onClick={ () => {
               setFavoriteRecipes();
-              setFavorite(checkFavorite());
+              setFavorite(checkFavorite(idRecipe));
             } }
           >
             <img

@@ -67,3 +67,38 @@ export const fetchDetails = async (pathname:string, urlDetails:string) => {
     return response[pathname][0];
   }
 };
+
+// Função check localStorage favorite
+export const checkFavorite = (idRecipe:string) => {
+  const favoriteStorage = window.localStorage
+    .getItem('favoriteRecipes');
+  if (favoriteStorage) {
+    const favoriteRecipes = JSON.parse(favoriteStorage);
+    return favoriteRecipes.some((el:any) => el.id === idRecipe);
+  }
+};
+
+// Função check localStorage progress
+export const checkProgress = (idRecipe:string, pathname: string) => {
+  const inProgressRecipes = window.localStorage.getItem('inProgressRecipes');
+  if (inProgressRecipes) {
+    const storage = JSON.parse(inProgressRecipes)[pathname];
+    if (storage) {
+      const bolean = Object.keys(JSON.parse(inProgressRecipes)[pathname])
+        .some((el) => el === idRecipe);
+      return bolean;
+    }
+  }
+  return false;
+};
+
+// Função check localStorage done
+export const doneProgress = (idRecipe:string) => {
+  const favoriteStorage = window.localStorage
+    .getItem('doneRecipes');
+  if (favoriteStorage) {
+    const favoriteRecipes = JSON.parse(favoriteStorage);
+    return favoriteRecipes.some((el:any) => el.id === idRecipe);
+  }
+  return false;
+};

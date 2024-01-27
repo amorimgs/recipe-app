@@ -335,3 +335,85 @@ describe('Testando Recipes - Tela principal', () => {
     expect(window.location.pathname).toBe(href);
   });
 });
+
+describe('Testando Recipes - Tela de detalhes', () => {
+  const mockDetails = {
+    strMeal: 'Test Meal',
+    strDrink: 'Test Drink',
+    strCategory: 'Test Category',
+    strInstructions: 'Test Instructions',
+    strMealThumb: 'test-meal.jpg',
+    strDrinkThumb: 'test-drink.jpg',
+    strYoutube: 'https://www.youtube.com/embed/test-video',
+    strIngredient1: 'Test Ingredient 1',
+    strMeasure1: 'Test Measure 1',
+  };
+  const startRecipeBtn = 'start-recipe-btn';
+  const rota = '/meals/52799';
+  beforeEach(() => {
+    // Limpa os mocks antes de cada teste
+    vi.resetAllMocks();
+  });
+  test('Testar Elementos da tela', async () => {
+    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
+    vi.spyOn(api, 'fetchData').mockResolvedValue({ drinks: [{ strDrink: 'A1' }] });
+    const { user } = renderWithRouter(<App />, { route: rota });
+
+    expect(await screen.findByTestId('recipe-photo')).toBeInTheDocument();
+    expect(await screen.findByTestId('recipe-title')).toBeInTheDocument();
+    expect(await screen.findByTestId('recipe-category')).toBeInTheDocument();
+    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
+    expect(await screen.findByTestId('video')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-ingredient-name-and-measure')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
+    // Testar botão de favoritar
+    const favoriteBTN = await screen.findByTestId('favorite-btn');
+    expect(favoriteBTN).toHaveAttribute('src', '/src/images/whiteHeartIcon.svg');
+    await user.click(favoriteBTN);
+    expect(favoriteBTN).toHaveAttribute('src', '/src/images/blackHeartIcon.svg');
+    await user.click(favoriteBTN);
+    expect(favoriteBTN).toHaveAttribute('src', '/src/images/whiteHeartIcon.svg');
+    // Testar ShareButton
+    const share = await screen.findByTestId('share-btn');
+    await user.click(share);
+    const textCopy = await screen.findByText('Link copied!');
+    expect(textCopy).toBeInTheDocument();
+    setTimeout(() => {
+      expect(textCopy).not.toBeInTheDocument();
+    }, 2000);
+
+    // Testar redirecionamento
+    const StartRecipe = await screen.findByTestId(startRecipeBtn);
+    expect(StartRecipe).toHaveTextContent('Start Recipe');
+    await user.click(StartRecipe);
+    expect(window.location.pathname).toBe('/meals/52799/in-progress');
+  });
+  test('Testar redirecionamento para tela de receita em andamento', async () => {
+    const recipeProgress = { meals: { 52799: [] } };
+    localStorage.setItem('inProgressRecipes', JSON.stringify(recipeProgress));
+    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
+    renderWithRouter(<App />, { route: rota });
+    const StartRecipe = await screen.findByTestId(startRecipeBtn);
+    expect(StartRecipe).toHaveTextContent('Continue Recipe');
+  });
+  test('Testar redirecionamento para tela de receita ja concluida', async () => {
+    const doneRecipe = [{ id: '52799' }];
+    localStorage.setItem('doneRecipes', JSON.stringify(doneRecipe));
+    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
+    renderWithRouter(<App />, { route: rota });
+    const StartRecipe = screen.queryByTestId(startRecipeBtn);
+    expect(StartRecipe).not.toBeInTheDocument();
+  });
+  test('Testando para drinks', async () => {
+    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
+    vi.spyOn(api, 'fetchData').mockResolvedValue({ meals: [{ strMeal: 'A1' }] });
+    renderWithRouter(<App />, { route: '/drinks/1722' });
+
+    expect(await screen.findByTestId('recipe-photo')).toBeInTheDocument();
+    expect(await screen.findByTestId('recipe-title')).toBeInTheDocument();
+    expect(await screen.findByTestId('recipe-category')).toBeInTheDocument();
+    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-ingredient-name-and-measure')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
+  });
+});
