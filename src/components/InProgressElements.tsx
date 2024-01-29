@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MealType, DrinkType } from '../Types/Types';
 
 function InProgressElements({ recipe }: any) {
-  console.log(recipe.recipe);
+  const { pathname } = window.location;
+  const mealOrDrink: string = pathname.split('/')[1];
+  const idRecipe: string = pathname.split('/')[2];
+
   const [ingredientsAndMeansures, setIngredientesAndMeansures] = React.useState<any>({
     ingredientes: [],
     meansure: [],
@@ -18,6 +21,36 @@ function InProgressElements({ recipe }: any) {
     }
   };
 
+  useEffect(() => {
+    const saveLocalStorage = () => {
+      const inProgressLocalStorage = window.localStorage.getItem('inProgressRecipes');
+      if (inProgressLocalStorage !== null) {
+        const parseJson = JSON.parse(inProgressLocalStorage);
+        if (parseJson[mealOrDrink][idRecipe]) {
+          setingredientStep(parseJson[mealOrDrink][idRecipe]);
+        }
+      } else {
+        const item = {
+          drinks: {},
+          meals: {},
+        };
+        window.localStorage.setItem('inProgressRecipes', JSON.stringify(item));
+      }
+    };
+    saveLocalStorage();
+  }, [idRecipe, mealOrDrink]);
+
+  useEffect(() => {
+    const setInProgressLocalStorage = () => {
+      const inProgressLocalStorage = window.localStorage.getItem('inProgressRecipes');
+      if (inProgressLocalStorage !== null) {
+        const parseJson = JSON.parse(inProgressLocalStorage);
+        parseJson[mealOrDrink][idRecipe] = ingredientStep;
+        window.localStorage.setItem('inProgressRecipes', JSON.stringify(parseJson));
+      }
+    };
+    setInProgressLocalStorage();
+  }, [idRecipe, ingredientStep, mealOrDrink]);
   const setIngredientesAndMeansure = (dados: any) => {
     if (dados) {
       const arr = Object.keys(dados);
@@ -63,15 +96,17 @@ function InProgressElements({ recipe }: any) {
       <ul>
         {ingredientsAndMeansures.ingredientes.map((el: string, i: number) => {
           return (
-            <li
-              key={ i }
-            >
+            <li key={ i }>
               <label
                 htmlFor={ `${i}` }
                 data-testid={ `${i}-ingredient-step` }
-                style={ { textDecoration: `${(ingredientStep
-                  .find((item) => item === el))
-                  ? 'line-through solid rgb(0, 0, 0)' : 'none'}` } }
+                style={ {
+                  textDecoration: `${
+                    ingredientStep.find((item) => item === el)
+                      ? 'line-through solid rgb(0, 0, 0)'
+                      : 'none'
+                  }`,
+                } }
               >
                 <input
                   type="checkbox"
