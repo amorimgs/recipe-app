@@ -10,7 +10,6 @@ function Recipes() {
   const { pathname } = window.location;
   const mealOrDrink = pathname.split('/')[1];
   const idRecipe = pathname.split('/')[2];
-  console.log(pathname, mealOrDrink, idRecipe);
 
   useEffect(() => {
     const recipeInProgress = async () => {

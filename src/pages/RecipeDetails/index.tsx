@@ -27,7 +27,8 @@ function RecipeDetails() {
         return (
           item.includes('strIngredient') && dados[item] !== ''
         );
-      }).map((el) => dados[el]);
+      }).map((el) => dados[el])
+        .filter((el) => el !== null);
       const meansureValues = arr.filter((item) => {
         return (
           item.includes('strMeasure') && dados[item] !== ''
