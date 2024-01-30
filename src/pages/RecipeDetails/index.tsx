@@ -1,11 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchData,
-  fetchDetails, checkFavorite,
+  fetchDetails,
   checkProgress, doneProgress } from '../../FuctionHelpes/FetchFunction';
-import ShareIcon from '../../images/shareIcon.svg';
-import BlackHeartIcon from '../../images/blackHeartIcon.svg';
-import WhiteHeartIcon from '../../images/whiteHeartIcon.svg';
+import Share from '../../components/Share';
+import FavoriteBtn from '../../components/FavoriteBtn';
 
 function RecipeDetails() {
   const [details, setDetails] = React.useState<any>(null);
@@ -15,9 +14,7 @@ function RecipeDetails() {
   });
   const [recommendation, setRecommendation] = React.useState<any>(null);
   const [inProgress, setInProgress] = React.useState<boolean>(false);
-  const [copy, setCopy] = React.useState<boolean>(false);
   const [done, setDone] = React.useState<boolean>(false);
-  const [favorite, setFavorite] = React.useState<boolean>(false);
   const navigate = useNavigate();
   const location = window.location.pathname;
   const pathname = location.split('/')[1];
@@ -49,7 +46,6 @@ function RecipeDetails() {
       const dados = await fetchDetails(pathname, urlDetails);
       setDetails(dados);
       setIngredientesAndMeansure(dados);
-      console.log(dados);
     };
     const fetchRecommendation = async () => {
       const urlRecommendation = pathname === 'meals'
@@ -60,8 +56,6 @@ function RecipeDetails() {
         setRecommendation(data[pathname === 'meals' ? 'drinks' : 'meals']);
       }
     };
-
-    setFavorite(checkFavorite(idRecipe));
     setInProgress(checkProgress(idRecipe, pathname));
     setDone(doneProgress(idRecipe));
     fetchRecommendation();
@@ -71,29 +65,6 @@ function RecipeDetails() {
   const handleClick = () => {
     const rout = `/${pathname}/${idRecipe}/in-progress`;
     navigate(rout);
-  };
-
-  const setFavoriteRecipes = () => {
-    if (checkFavorite(idRecipe)) {
-      const favoriteStorage = window.localStorage
-        .getItem('favoriteRecipes');
-      if (favoriteStorage) {
-        const favoriteRecipes = JSON.parse(favoriteStorage);
-        const newFavoriteRecipes = favoriteRecipes.filter((el:any) => el.id !== idRecipe);
-        window.localStorage
-          .setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
-      }
-    } else {
-      const reciteFormated = [{
-        id: idRecipe,
-        type: pathname.replace('s', ''),
-        nationality: details.strArea || '',
-        category: details.strCategory,
-        alcoholicOrNot: details.strAlcoholic || '',
-        name: details.strMeal || details.strDrink,
-        image: details.strDrinkThumb || details.strMealThumb }];
-      window.localStorage.setItem('favoriteRecipes', JSON.stringify(reciteFormated));
-    }
   };
 
   if (details) {
@@ -158,26 +129,17 @@ function RecipeDetails() {
           })}
         </div>
         <div style={ { position: 'fixed', top: 0, right: '0' } }>
-          <button
-            onClick={ () => {
-              navigator.clipboard.writeText(window.location.href);
-              setCopy(true);
-            } }
-          >
-            <img data-testid="share-btn" src={ ShareIcon } alt="ShareIcon" />
-          </button>
-          <button
-            onClick={ () => {
-              setFavoriteRecipes();
-              setFavorite(checkFavorite(idRecipe));
-            } }
-          >
-            <img
-              data-testid="favorite-btn"
-              src={ favorite ? BlackHeartIcon : WhiteHeartIcon }
-              alt="FavoriteIcon"
-            />
-          </button>
+          <Share />
+          <FavoriteBtn
+            obj={ {
+              id: idRecipe,
+              type: pathname.replace('s', ''),
+              nationality: details.strArea || '',
+              category: details.strCategory,
+              alcoholicOrNot: details.strAlcoholic || '',
+              name: details.strMeal || details.strDrink,
+              image: details.strDrinkThumb || details.strMealThumb } }
+          />
         </div>
         {!done && (
           <button
@@ -187,7 +149,6 @@ function RecipeDetails() {
           >
             {inProgress ? 'Continue Recipe' : 'Start Recipe'}
           </button>)}
-        {copy && <h2>Link copied!</h2>}
       </div>
 
     );
