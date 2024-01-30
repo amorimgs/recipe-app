@@ -23,7 +23,14 @@ function FavoriteBtn({ obj }: { obj: any }) {
         alcoholicOrNot: obj.alcoholicOrNot,
         name: obj.name,
         image: obj.image }];
-      window.localStorage.setItem('favoriteRecipes', JSON.stringify(reciteFormated));
+      const favoriteLocalStorage = window.localStorage.getItem('favoriteRecipes');
+      if (favoriteLocalStorage) {
+        const favoriteRecipes = JSON.parse(favoriteLocalStorage);
+        favoriteRecipes.push(reciteFormated[0]);
+        window.localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
+      } else {
+        window.localStorage.setItem('favoriteRecipes', JSON.stringify(reciteFormated));
+      }
     }
   };
   useEffect(() => {

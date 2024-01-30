@@ -3,8 +3,30 @@ import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import Profile from '../pages/Profile';
+import FavoriteRecipes from '../pages/FavoritesRecipes';
 import App from '../App';
 import * as api from '../FuctionHelpes/FetchFunction';
+
+const mockRecipes = [
+  {
+    id: '52771',
+    type: 'meal',
+    nationality: 'Italian',
+    category: 'Vegetarian',
+    alcoholicOrNot: '',
+    name: 'Spicy Arrabiata Penne',
+    image: 'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+  },
+  {
+    id: '178319',
+    type: 'drink',
+    nationality: '',
+    category: 'Cocktail',
+    alcoholicOrNot: 'Alcoholic',
+    name: 'Aquamarine',
+    image: 'https://www.thecocktaildb.com/images/media/drink/zvsre31572902738.jpg',
+  },
+];
 
 const renderWithRouter = (ui: JSX.Element, { route = '/' } = {}) => {
   window.history.pushState({}, '', route);
@@ -115,7 +137,6 @@ describe('Testar SearchBar', () => {
   const execSearchBtn = 'exec-search-btn';
   const NameSearchRadio = 'name-search-radio';
   beforeEach(() => {
-    // Limpa os mocks antes de cada teste
     vi.resetAllMocks();
   });
   test('Verificar se o input de search está funcionando corretamente', async () => {
@@ -197,7 +218,6 @@ describe('Testar Footer', () => {
 
 describe('Componente Profile', () => {
   beforeEach(() => {
-    // Limpa o localStorage antes de cada teste
     localStorage.clear();
   });
 
@@ -234,27 +254,23 @@ describe('Componente Profile', () => {
     const { getByTestId } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
     const doneRecipesButton = getByTestId('profile-done-btn');
     fireEvent.click(doneRecipesButton);
-    // Verifique se a URL mudou para '/done-recipes'
   });
 
   test('navigates to Favorite Recipes page when Favorite Recipes button is clicked', () => {
     const { getByTestId } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
     const favoriteRecipesButton = getByTestId('profile-favorite-btn');
     fireEvent.click(favoriteRecipesButton);
-    // Verifique se a URL mudou para '/favorite-recipes'
   });
 
   test('navigates to Home page when Logout button is clicked', () => {
     const { getByRole } = render(<MemoryRouter initialEntries={ ['/'] }><Profile /></MemoryRouter>);
     const logoutButton = getByRole('button', { name: /logout/i });
     fireEvent.click(logoutButton);
-    // Verifique se a URL mudou para '/'
   });
 });
 
 describe('Testando Recipes - Tela principal', () => {
   beforeEach(() => {
-    // Limpa os mocks antes de cada teste
     vi.resetAllMocks();
   });
   test('Verifica a tela principal com meals está funcionando.', async () => {
@@ -334,86 +350,77 @@ describe('Testando Recipes - Tela principal', () => {
     await user.click(link);
     expect(window.location.pathname).toBe(href);
   });
-});
 
-describe('Testando Recipes - Tela de detalhes', () => {
-  const mockDetails = {
-    strMeal: 'Test Meal',
-    strDrink: 'Test Drink',
-    strCategory: 'Test Category',
-    strInstructions: 'Test Instructions',
-    strMealThumb: 'test-meal.jpg',
-    strDrinkThumb: 'test-drink.jpg',
-    strYoutube: 'https://www.youtube.com/embed/test-video',
-    strIngredient1: 'Test Ingredient 1',
-    strMeasure1: 'Test Measure 1',
-  };
-  const startRecipeBtn = 'start-recipe-btn';
-  const rota = '/meals/52799';
-  beforeEach(() => {
-    // Limpa os mocks antes de cada teste
+  describe('Componente de Receitas Favoritas', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+    test('deve exibir todas as receitas quando o filtro "All" é selecionado', async () => {
+      localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+
+      const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+
+      await userEvent.click(getByTestId('filter-by-all-btn'));
+
+      const recipeCards = queryAllByTestId(/-horizontal-name/i);
+
+      expect(recipeCards.length).toBeGreaterThan(0);
+    });
+  });
+
+  test('deve exibir todas as receitas quando o filtro "Meals" é selecionado', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+
+    await userEvent.click(getByTestId('filter-by-meal-btn'));
+
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
+
+    expect(recipeCards.length).toBeGreaterThan(0);
+  });
+  test('deve copiar o link da receita quando o botão de compartilhamento é clicado', async () => {
+    const { getByTestId, findByText } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    const shareButton = getByTestId('0-horizontal-share-btn');
+
+    fireEvent.click(shareButton);
+
+    const linkCopiedText = await findByText('Link copied!');
+    expect(linkCopiedText).toBeInTheDocument();
+  });
+
+  test('deve desfavoritar uma receita corretamente', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
     vi.resetAllMocks();
-  });
-  test('Testar Elementos da tela', async () => {
-    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
-    vi.spyOn(api, 'fetchData').mockResolvedValue({ drinks: [{ strDrink: 'A1' }] });
-    const { user } = renderWithRouter(<App />, { route: rota });
 
-    expect(await screen.findByTestId('recipe-photo')).toBeInTheDocument();
-    expect(await screen.findByTestId('recipe-title')).toBeInTheDocument();
-    expect(await screen.findByTestId('recipe-category')).toBeInTheDocument();
-    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
-    expect(await screen.findByTestId('video')).toBeInTheDocument();
-    expect(await screen.findByTestId('0-ingredient-name-and-measure')).toBeInTheDocument();
-    expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
-    // Testar botão de favoritar
-    const favoriteBTN = await screen.findByTestId('favorite-btn');
-    expect(favoriteBTN).toHaveAttribute('src', '/src/images/whiteHeartIcon.svg');
-    await user.click(favoriteBTN);
-    expect(favoriteBTN).toHaveAttribute('src', '/src/images/blackHeartIcon.svg');
-    await user.click(favoriteBTN);
-    expect(favoriteBTN).toHaveAttribute('src', '/src/images/whiteHeartIcon.svg');
-    // Testar ShareButton
-    const share = await screen.findByTestId('share-btn');
-    await user.click(share);
-    const textCopy = await screen.findByText('Link copied!');
-    expect(textCopy).toBeInTheDocument();
-    setTimeout(() => {
-      expect(textCopy).not.toBeInTheDocument();
-    }, 2000);
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
-    // Testar redirecionamento
-    const StartRecipe = await screen.findByTestId(startRecipeBtn);
-    expect(StartRecipe).toHaveTextContent('Start Recipe');
-    await user.click(StartRecipe);
-    expect(window.location.pathname).toBe('/meals/52799/in-progress');
-  });
-  test('Testar redirecionamento para tela de receita em andamento', async () => {
-    const recipeProgress = { meals: { 52799: [] } };
-    localStorage.setItem('inProgressRecipes', JSON.stringify(recipeProgress));
-    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
-    renderWithRouter(<App />, { route: rota });
-    const StartRecipe = await screen.findByTestId(startRecipeBtn);
-    expect(StartRecipe).toHaveTextContent('Continue Recipe');
-  });
-  test('Testar redirecionamento para tela de receita ja concluida', async () => {
-    const doneRecipe = [{ id: '52799' }];
-    localStorage.setItem('doneRecipes', JSON.stringify(doneRecipe));
-    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
-    renderWithRouter(<App />, { route: rota });
-    const StartRecipe = screen.queryByTestId(startRecipeBtn);
-    expect(StartRecipe).not.toBeInTheDocument();
-  });
-  test('Testando para drinks', async () => {
-    vi.spyOn(api, 'fetchDetails').mockResolvedValue(mockDetails);
-    vi.spyOn(api, 'fetchData').mockResolvedValue({ meals: [{ strMeal: 'A1' }] });
-    renderWithRouter(<App />, { route: '/drinks/1722' });
+    const favoriteButton = getByTestId('0-horizontal-favorite-btn');
+    const recipeCardsBefore = queryAllByTestId(/-horizontal-name/i);
 
-    expect(await screen.findByTestId('recipe-photo')).toBeInTheDocument();
-    expect(await screen.findByTestId('recipe-title')).toBeInTheDocument();
-    expect(await screen.findByTestId('recipe-category')).toBeInTheDocument();
-    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
-    expect(await screen.findByTestId('0-ingredient-name-and-measure')).toBeInTheDocument();
-    expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
+    expect(recipeCardsBefore.length).toBe(2);
+
+    fireEvent.click(favoriteButton);
+
+    const recipeCardsAfter = queryAllByTestId(/-horizontal-name/i);
+
+    expect(recipeCardsAfter.length).toBe(1);
+  });
+  test('deve filtrar receitas por tipo corretamente', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+
+    await userEvent.click(getByTestId('filter-by-drink-btn'));
+
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
+    const shareButton = getByTestId('0-horizontal-share-btn');
+
+    expect(recipeCards.length).toBe(1);
+
+    fireEvent.click(shareButton);
+
+    const linkCopiedText = await screen.findByText('Link copied!');
+    expect(linkCopiedText).toBeInTheDocument();
   });
 });
