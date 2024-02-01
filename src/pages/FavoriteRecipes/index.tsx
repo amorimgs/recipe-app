@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import Header from '../../components/Header';
-import Share from '../../components/Share';
 
 type RecipeDetailsType = {
   id: string,
@@ -19,6 +19,7 @@ type RecipeDetailsType = {
 function FavoriteRecipes() {
   const [recipesDone, setRecipesDone] = useState<RecipeDetailsType[]>([]);
   const [filter, setFilter] = useState('all');
+  const [shareMessage, setShareMessage] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [RecipeFilter, setRecipeFilter] = useState<string>('all');
 
@@ -39,6 +40,13 @@ function FavoriteRecipes() {
       (RecipeFilter === 'meals' && !recipe.alcoholicOrNot)
         || (RecipeFilter === 'drinks' && recipe.alcoholicOrNot)
     ));
+
+  const copyText = async (recipe: RecipeDetailsType) => {
+    const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
+
+    await navigator.clipboard.writeText(recipeUrl);
+    setShareMessage(true);
+  };
 
   const toggleFavorite = (recipe: RecipeDetailsType) => {
     const recipeId = recipe.id;
@@ -101,7 +109,15 @@ function FavoriteRecipes() {
                 <p data-testid={ `${index}-horizontal-top-text` }>
                   {`${recipe.nationality} - ${recipe.category}`}
                 </p>
-                <Share />
+                <button
+                  onClick={ () => copyText(recipe) }
+                >
+                  <img
+                    data-testid={ `${index}-horizontal-share-btn` }
+                    src={ shareIcon }
+                    alt="ícone do botão compartilhar"
+                  />
+                </button>
                 <button
                   onClick={ () => toggleFavorite(recipe) }
                 >
@@ -118,7 +134,15 @@ function FavoriteRecipes() {
                 <p data-testid={ `${index}-horizontal-top-text` }>
                   {recipe.alcoholicOrNot ? 'Alcoholic' : 'Non-Alcoholic'}
                 </p>
-                <Share />
+                <button
+                  onClick={ () => copyText(recipe) }
+                >
+                  <img
+                    data-testid={ `${index}-horizontal-share-btn` }
+                    src={ shareIcon }
+                    alt="ícone do botão compartilhar"
+                  />
+                </button>
                 <button
                   onClick={ () => toggleFavorite(recipe) }
                 >
@@ -128,6 +152,7 @@ function FavoriteRecipes() {
                     alt="ícone do botão favoritar"
                   />
                 </button>
+                {shareMessage && <h2>Link copied!</h2>}
               </>
             )}
             <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>

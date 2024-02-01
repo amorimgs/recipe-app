@@ -3,7 +3,7 @@ import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import Profile from '../pages/Profile';
-// import FavoriteRecipes from '../pages/FavoritesRecipes';
+import FavoriteRecipes from '../pages/FavoriteRecipes';
 import App from '../App';
 import * as api from '../FuctionHelpes/FetchFunction';
 
@@ -331,97 +331,100 @@ describe('Testando Recipes - Tela principal', () => {
   });
 });
 
-// describe('Componente de Receitas Favoritas', () => {
-//   const mockRecipes = [
-//     {
-//       id: '52771',
-//       type: 'meal',
-//       nationality: 'Italian',
-//       category: 'Vegetarian',
-//       alcoholicOrNot: '',
-//       name: 'Spicy Arrabiata Penne',
-//       image: 'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
-//     },
-//     {
-//       id: '178319',
-//       type: 'drink',
-//       nationality: '',
-//       category: 'Cocktail',
-//       alcoholicOrNot: 'Alcoholic',
-//       name: 'Aquamarine',
-//       image: 'https://www.thecocktaildb.com/images/media/drink/zvsre31572902738.jpg',
-//     },
-//   ];
-//   beforeEach(() => {
-//     localStorage.clear();
-//   });
-//   test('deve exibir todas as receitas quando o filtro "All" é selecionado', async () => {
-//     localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+describe('Componente de Receitas Favoritas', () => {
+  const mockRecipes = [
+    {
+      id: '52771',
+      type: 'meal',
+      nationality: 'Italian',
+      category: 'Vegetarian',
+      alcoholicOrNot: '',
+      name: 'Spicy Arrabiata Penne',
+      image: 'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+    },
+    {
+      id: '178319',
+      type: 'drink',
+      nationality: '',
+      category: 'Cocktail',
+      alcoholicOrNot: 'Alcoholic',
+      name: 'Aquamarine',
+      image: 'https://www.thecocktaildb.com/images/media/drink/zvsre31572902738.jpg',
+    },
+  ];
+  beforeEach(() => {
+    localStorage.clear();
+  });
+  test('deve exibir todas as receitas quando o filtro "All" é selecionado', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    await userEvent.click(getByTestId('filter-by-all-btn'));
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
 
-//     const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    expect(recipeCards.length).toBeGreaterThan(0);
+  });
+  test('deve exibir as receitas quando o filtro "Meals" é selecionado', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
 
-//     await userEvent.click(getByTestId('filter-by-all-btn'));
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
-//     const recipeCards = queryAllByTestId(/-horizontal-name/i);
+    await userEvent.click(getByTestId('filter-by-meal-btn'));
 
-//     expect(recipeCards.length).toBeGreaterThan(0);
-//   });
-//   test('deve exibir todas as receitas quando o filtro "Meals" é selecionado', async () => {
-//     localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
 
-//     const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    expect(recipeCards.length).toBeGreaterThan(0);
+  });
 
-//     await userEvent.click(getByTestId('filter-by-meal-btn'));
+  test('deve desfavoritar uma receita corretamente', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+    vi.resetAllMocks();
 
-//     const recipeCards = queryAllByTestId(/-horizontal-name/i);
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
-//     expect(recipeCards.length).toBeGreaterThan(0);
-//   });
-//   test('deve copiar o link da receita quando o botão de compartilhamento é clicado', async () => {
-//     const { getByTestId, findByText } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
-//     const shareButton = getByTestId('0-horizontal-share-btn');
+    const favoriteButton = getByTestId('0-horizontal-favorite-btn');
+    const recipeCardsBefore = queryAllByTestId(/-horizontal-name/i);
 
-//     fireEvent.click(shareButton);
+    expect(recipeCardsBefore.length).toBe(2);
 
-//     const linkCopiedText = await findByText('Link copied!');
-//     expect(linkCopiedText).toBeInTheDocument();
-//   });
+    fireEvent.click(favoriteButton);
 
-//   test('deve desfavoritar uma receita corretamente', async () => {
-//     localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
-//     vi.resetAllMocks();
+    const recipeCardsAfter = queryAllByTestId(/-horizontal-name/i);
 
-//     const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    expect(recipeCardsAfter.length).toBe(1);
+  });
+  test('deve filtrar receitas por tipo corretamente', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
 
-//     const favoriteButton = getByTestId('0-horizontal-favorite-btn');
-//     const recipeCardsBefore = queryAllByTestId(/-horizontal-name/i);
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
-//     expect(recipeCardsBefore.length).toBe(2);
+    await userEvent.click(getByTestId('filter-by-drink-btn'));
 
-//     fireEvent.click(favoriteButton);
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
+    const shareButton = getByTestId('0-horizontal-share-btn');
 
-//     const recipeCardsAfter = queryAllByTestId(/-horizontal-name/i);
+    expect(recipeCards.length).toBe(1);
+    fireEvent.click(shareButton);
 
-//     expect(recipeCardsAfter.length).toBe(1);
-//   });
-//   test('deve filtrar receitas por tipo corretamente', async () => {
-//     localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+    const linkCopiedText = await screen.findByText('Link copied!');
+    expect(linkCopiedText).toBeInTheDocument();
+  });
+  test('notAcolic', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify([
+      {
+        id: '178319',
+        type: 'drink',
+        nationality: '',
+        category: 'Cocktail',
+        alcoholicOrNot: '',
+        name: 'Aquamarine',
+        image: 'https://www.thecocktaildb.com/images/media/drink/zvsre31572902738.jpg',
+      },
+    ]));
+    render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
-//     const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
-
-//     await userEvent.click(getByTestId('filter-by-drink-btn'));
-
-//     const recipeCards = queryAllByTestId(/-horizontal-name/i);
-//     const shareButton = getByTestId('0-horizontal-share-btn');
-
-//     expect(recipeCards.length).toBe(1);
-
-//     fireEvent.click(shareButton);
-
-//     const linkCopiedText = await screen.findByText('Link copied!');
-//     expect(linkCopiedText).toBeInTheDocument();
-//   });
-// });
+    expect(screen.getByText(/alcoholic/i)).toHaveTextContent('Non-Alcoholic');
+  });
+});
 
 describe('Testando Recipes - Tela de detalhes', () => {
   const mockDetails = {
@@ -507,5 +510,46 @@ describe('Testando Recipes - Tela de detalhes', () => {
     expect(await screen.findByTestId('instructions')).toBeInTheDocument();
     expect(await screen.findByTestId('0-ingredient-name-and-measure')).toBeInTheDocument();
     expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
+  });
+});
+
+describe('Testando Recipes - Tela de In Progress', () => {
+  const mockResulted = { meals: [{
+    strMeal: 'Test Meal',
+    strCategory: 'Test Category',
+    strInstructions: 'Test Instructions',
+    strMealThumb: 'test-meal.jpg',
+    strIngredient1: 'Test Ingredient 1',
+    strMeasure1: 'Test Measure 1',
+  }] };
+  beforeEach(() => {
+    // Limpa os mocks antes de cada teste
+    vi.resetAllMocks();
+  });
+  test('Testando elementos da tela', async () => {
+    vi.spyOn(api, 'fetchData').mockResolvedValueOnce(mockResulted);
+    renderWithRouter(<App />, { route: '/meals/0001/in-progress' });
+    expect(await screen.findByRole('img', {
+      name: /Test Meal/i,
+    })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', {
+      name: /Test Meal/i,
+    })).toBeInTheDocument();
+    expect(await screen.findByText(/Test Category/i)).toBeInTheDocument();
+    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-ingredient-step')).toBeInTheDocument();
+  });
+  test('Testando elementos da tela drink', async () => {
+    vi.spyOn(api, 'fetchData').mockResolvedValueOnce({ drinks: [{
+      strDrink: 'Drink',
+      strCategory: 'Category',
+      strInstructions: 'Instructions',
+      strIngredient1: 'Ingredient 1',
+      strMeasure1: 'Measure 1',
+      strAlcoholic: 'Test Alcoholic',
+      strMealThumb: 'imgTest.jog',
+    }] });
+    renderWithRouter(<App />, { route: '/drinks/0001/in-progress' });
+    expect(await screen.findByTestId('favorite-btn')).toBeInTheDocument();
   });
 });
