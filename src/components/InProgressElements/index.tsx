@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import { MealType, DrinkType } from '../Types/Types';
+import { useNavigate } from 'react-router-dom';
+import { MealType, DrinkType } from '../../Types/Types';
 
 function InProgressElements({ recipe }: any) {
   const { pathname } = window.location;
   const mealOrDrink: string = pathname.split('/')[1];
   const idRecipe: string = pathname.split('/')[2];
-
+  const [ingredientStep, setingredientStep] = React.useState<string[]>([]);
   const [ingredientsAndMeansures, setIngredientesAndMeansures] = React.useState<any>({
     ingredientes: [],
     meansure: [],
   });
-  const [ingredientStep, setingredientStep] = React.useState<string[]>([]);
-
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = e;
     if (target.checked) {
@@ -51,6 +51,7 @@ function InProgressElements({ recipe }: any) {
     };
     setInProgressLocalStorage();
   }, [idRecipe, ingredientStep, mealOrDrink]);
+
   const setIngredientesAndMeansure = (dados: any) => {
     if (dados) {
       const arr = Object.keys(dados);
@@ -74,6 +75,32 @@ function InProgressElements({ recipe }: any) {
   React.useEffect(() => {
     setIngredientesAndMeansure(recipe);
   }, [recipe]);
+
+  const DoneRecipe = () => {
+    const data = {
+      id: idRecipe,
+      type: mealOrDrink.replace('s', ''),
+      nationality: recipe.strArea || '',
+      category: recipe.strCategory,
+      alcoholicOrNot: recipe.strAlcoholic || '',
+      name: recipe.strMeal || recipe.strDrink,
+      image: recipe.strDrinkThumb || recipe.strMealThumb,
+      doneDate: new Date(),
+      tags: (recipe.strTags && recipe.strTags.split(',')) || [],
+    };
+    const localStorage = window.localStorage.getItem('doneRecipes');
+    if (localStorage && JSON.parse(localStorage).length > 0) {
+      const receitasFeitas = JSON.parse(localStorage);
+      const boolean = receitasFeitas.some((el:any) => el.id === idRecipe);
+      if (!boolean) {
+        receitasFeitas.push(data);
+        window.localStorage.setItem('doneRecipes', JSON.stringify(receitasFeitas));
+      }
+    } else {
+      window.localStorage.setItem('doneRecipes', JSON.stringify([data]));
+    }
+  };
+
   return (
     <div>
       <h2 data-testid="recipe-title">
@@ -134,6 +161,17 @@ function InProgressElements({ recipe }: any) {
       >
         Assita ao vídeo
       </a>
+      <button
+        type="button"
+        data-testid="finish-recipe-btn"
+        disabled={ ingredientStep.length !== ingredientsAndMeansures.ingredientes.length }
+        onClick={ () => {
+          DoneRecipe();
+          navigate('/done-recipes');
+        } }
+      >
+        Done
+      </button>
     </div>
   );
 }

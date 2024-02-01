@@ -130,7 +130,7 @@ function RecipeDetails() {
           })}
         </div>
         <div style={ { position: 'fixed', top: 0, right: '0' } }>
-          <Share />
+          <Share idRecipe={ idRecipe } path={ pathname.replace('s', '') } />
           <FavoriteBtn
             obj={ {
               id: idRecipe,
