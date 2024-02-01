@@ -24,7 +24,8 @@ function InProgressElements({ recipe }: any) {
   useEffect(() => {
     const saveLocalStorage = () => {
       const inProgressLocalStorage = window.localStorage.getItem('inProgressRecipes');
-      if (inProgressLocalStorage !== null) {
+      if (inProgressLocalStorage !== null
+        && JSON.parse(inProgressLocalStorage)[mealOrDrink]) {
         const parseJson = JSON.parse(inProgressLocalStorage);
         if (parseJson[mealOrDrink][idRecipe]) {
           setingredientStep(parseJson[mealOrDrink][idRecipe]);

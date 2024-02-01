@@ -509,3 +509,44 @@ describe('Testando Recipes - Tela de detalhes', () => {
     expect(await screen.findByTestId('0-recommendation-title')).toHaveTextContent('A1');
   });
 });
+
+describe('Testando Recipes - Tela de In Progress', () => {
+  const mockResulted = { meals: [{
+    strMeal: 'Test Meal',
+    strCategory: 'Test Category',
+    strInstructions: 'Test Instructions',
+    strMealThumb: 'test-meal.jpg',
+    strIngredient1: 'Test Ingredient 1',
+    strMeasure1: 'Test Measure 1',
+  }] };
+  beforeEach(() => {
+    // Limpa os mocks antes de cada teste
+    vi.resetAllMocks();
+  });
+  test('Testando elementos da tela', async () => {
+    vi.spyOn(api, 'fetchData').mockResolvedValueOnce(mockResulted);
+    renderWithRouter(<App />, { route: '/meals/0001/in-progress' });
+    expect(await screen.findByRole('img', {
+      name: /Test Meal/i,
+    })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', {
+      name: /Test Meal/i,
+    })).toBeInTheDocument();
+    expect(await screen.findByText(/Test Category/i)).toBeInTheDocument();
+    expect(await screen.findByTestId('instructions')).toBeInTheDocument();
+    expect(await screen.findByTestId('0-ingredient-step')).toBeInTheDocument();
+  });
+  test('Testando elementos da tela drink', async () => {
+    vi.spyOn(api, 'fetchData').mockResolvedValueOnce({ drinks: [{
+      strDrink: 'Drink',
+      strCategory: 'Category',
+      strInstructions: 'Instructions',
+      strIngredient1: 'Ingredient 1',
+      strMeasure1: 'Measure 1',
+      strAlcoholic: 'Test Alcoholic',
+      strMealThumb: 'imgTest.jog',
+    }] });
+    renderWithRouter(<App />, { route: '/drinks/0001/in-progress' });
+    expect(await screen.findByTestId('favorite-btn')).toBeInTheDocument();
+  });
+});
