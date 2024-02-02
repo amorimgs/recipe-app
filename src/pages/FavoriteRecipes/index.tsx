@@ -4,7 +4,7 @@ import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import Header from '../../components/Header';
 
-type RecipeDetailsType = {
+export type RecipeDetailsType = {
   id: string,
   type: string,
   nationality: string,
