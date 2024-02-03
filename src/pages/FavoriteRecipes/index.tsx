@@ -41,10 +41,10 @@ function FavoriteRecipes() {
         || (RecipeFilter === 'drinks' && recipe.alcoholicOrNot)
     ));
 
-  const copyText = async (recipe: RecipeDetailsType) => {
+  const copyText = (recipe: RecipeDetailsType) => {
     const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
 
-    await navigator.clipboard.writeText(recipeUrl);
+    navigator.clipboard.writeText(recipeUrl);
     setShareMessage(true);
   };
 
