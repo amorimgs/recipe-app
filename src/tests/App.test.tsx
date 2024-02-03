@@ -6,6 +6,7 @@ import Profile from '../pages/Profile';
 import FavoriteRecipes from '../pages/FavoriteRecipes';
 import App from '../App';
 import * as api from '../FuctionHelpes/FetchFunction';
+import DoneRecipes from '../pages/DoneRecipes';
 
 const renderWithRouter = (ui: JSX.Element, { route = '/' } = {}) => {
   window.history.pushState({}, '', route);
@@ -120,7 +121,7 @@ describe('Testar SearchBar', () => {
   });
   test('Verificar se o input de search está funcionando corretamente', async () => {
     vi.spyOn(api, 'searchRecipes').mockResolvedValueOnce({ meals: [
-      { idMeal: '52977', strMeal: 'Corba', strMealThumb: 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg' },
+      { idMeal: '52977', strMeal: 'Corba', strMealThumb: 'https://www.themealdb.com/images/media/meals/58oia6156491652.jpg' },
     ] }).mockResolvedValueOnce({ meals: null }).mockResolvedValueOnce({ meals: [
       { idMeal: '52885', strMeal: 'Bubble & Squeak', strMealThumb: 'https://www.themealdb.com/images/media/meals/xusqvw1511638311.jpg' },
     ] });
@@ -155,7 +156,7 @@ describe('Testar SearchBar', () => {
 
   test('Verificar redirecionamento', async () => {
     vi.spyOn(api, 'searchRecipes').mockResolvedValueOnce({ drinks: [
-      { idDrink: '17222', strDrink: 'A1', strDrinkThumb: 'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg' },
+      { idDrink: '17222', strDrink: 'A1', strDrinkThumb: 'https://www.thecocktaildb.com/images/media/drink/2x8thr150481692.jpg' },
     ] });
 
     const { user } = renderWithRouter(<App />, { route: '/drinks' });
@@ -551,5 +552,77 @@ describe('Testando Recipes - Tela de In Progress', () => {
     }] });
     renderWithRouter(<App />, { route: '/drinks/0001/in-progress' });
     expect(await screen.findByTestId('favorite-btn')).toBeInTheDocument();
+  });
+});
+
+describe('Testando Recipes - Tela de Done', () => {
+  const mockRecipes = [
+    {
+      id: '52977',
+      type: 'meal',
+      nationality: 'Turkish',
+      category: 'Side',
+      alcoholicOrNot: '',
+      name: 'Corba',
+      image: 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg',
+      doneDate: '2024-02-03T03:28:01.129Z',
+      tags: ['Soup'],
+    },
+    {
+      id: '17222',
+      type: 'drink',
+      nationality: '',
+      category: 'Cocktail',
+      alcoholicOrNot: 'Alcoholic',
+      name: 'A1',
+      image: 'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg',
+      doneDate: '2024-02-03T04:03:04.323Z',
+      tags: [],
+    },
+  ];
+  beforeEach(() => {
+    localStorage.clear();
+  });
+  test('Testando Filtros', async () => {
+    localStorage.setItem('doneRecipes', JSON.stringify(mockRecipes));
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><DoneRecipes /></BrowserRouter>);
+    await userEvent.click(getByTestId('filter-by-all-btn'));
+    const recipeCards = queryAllByTestId(/-horizontal-name/i);
+
+    expect(recipeCards.length).toBeGreaterThan(1);
+    await userEvent.click(getByTestId('filter-by-meal-btn'));
+    screen.getByText(/corba/i);
+    await userEvent.click(getByTestId('filter-by-drink-btn'));
+    screen.getByTestId('0-horizontal-top-text');
+  });
+  test('Testando shareBTN', async () => {
+    localStorage.setItem('doneRecipes', JSON.stringify(mockRecipes));
+    const { getByTestId, getAllByText } = render(<BrowserRouter><DoneRecipes /></BrowserRouter>);
+    await userEvent.click(getByTestId('0-horizontal-share-btn'));
+    const textCopy = getAllByText(/Link copied!/i);
+    expect(textCopy[0]).toBeInTheDocument();
+  });
+  test('Testando acolic or not', async () => {
+    localStorage.setItem('doneRecipes', JSON.stringify([
+      {
+        id: '1',
+        type: 'drink',
+        nationality: '',
+        category: 'test',
+        alcoholicOrNot: 'Alcoholic',
+        name: 'A1',
+        image: 't.jpg',
+      }, {
+        id: '2',
+        type: 'drink',
+        nationality: '',
+        category: 'test',
+        alcoholicOrNot: '',
+        name: 'test2',
+        image: 't.jpg',
+      }]));
+    const { getByTestId } = render(<BrowserRouter><DoneRecipes /></BrowserRouter>);
+    expect(getByTestId('0-horizontal-top-text')).toHaveTextContent('Alcoholic');
+    expect(getByTestId('1-horizontal-top-text')).toHaveTextContent('Non-Alcoholic');
   });
 });

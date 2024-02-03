@@ -26,10 +26,10 @@ function DoneRecipes() {
         || (RecipeFilter === 'drinks' && recipe.alcoholicOrNot)
     ));
 
-  const copyText = async (recipe: RecipeDetailsType) => {
+  const copyText = (recipe: RecipeDetailsType) => {
     const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
 
-    await navigator.clipboard.writeText(recipeUrl);
+    navigator.clipboard.writeText(recipeUrl);
     setShareMessage(true);
   };
   return (
@@ -117,14 +117,6 @@ function DoneRecipes() {
               </>
             )}
             <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>
-            <div>
-              {recipe.tags
-                && recipe.tags.slice(0, 2).map((tag, tagIndex) => (
-                  <span key={ tagIndex } data-testid={ `${index}-${tag}-horizontal-tag` }>
-                    {tag}
-                  </span>
-                ))}
-            </div>
           </div>
         ))}
       </div>
