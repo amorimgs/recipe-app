@@ -4,7 +4,7 @@ import shareIcon from '../../images/shareIcon.svg';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import Header from '../../components/Header';
 
-type RecipeDetailsType = {
+export type RecipeDetailsType = {
   id: string,
   type: string,
   nationality: string,
@@ -44,12 +44,8 @@ function FavoriteRecipes() {
   const copyText = async (recipe: RecipeDetailsType) => {
     const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
 
-    try {
-      await navigator.clipboard.writeText(recipeUrl);
-      setShareMessage(true);
-    } catch (error) {
-      console.error('Error copying text:', error);
-    }
+    await navigator.clipboard.writeText(recipeUrl);
+    setShareMessage(true);
   };
 
   const toggleFavorite = (recipe: RecipeDetailsType) => {

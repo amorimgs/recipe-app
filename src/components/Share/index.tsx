@@ -1,14 +1,14 @@
 import React from 'react';
 import ShareIcon from '../../images/shareIcon.svg';
 
-function Share() {
+function Share({ idRecipe, path }: any) {
   const [copy, setCopy] = React.useState<boolean>(false);
-
+  const url = `${window.location.origin}/${path}s/${idRecipe}`;
   return (
     <>
       <button
         onClick={ () => {
-          navigator.clipboard.writeText(window.location.href);
+          navigator.clipboard.writeText(url);
           setCopy(true);
         } }
       >
