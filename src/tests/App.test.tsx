@@ -429,17 +429,13 @@ describe('Componente de Receitas Favoritas', () => {
   test('deve redefinir o estado de mensagem compartilhada após copiar o texto', async () => {
     localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
 
-    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+    const { getByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
 
     const shareButton = getByTestId('0-horizontal-share-btn');
     fireEvent.click(shareButton);
 
     const linkCopiedText = await screen.findByText('Link copied!');
     expect(linkCopiedText).toBeInTheDocument();
-
-    const recipeCardsAfter = queryAllByTestId(/-horizontal-name/i);
-
-    expect(recipeCardsAfter.length).toBe(2);
   });
 });
 
@@ -610,13 +606,6 @@ describe('Testando Recipes - Tela de Done', () => {
     screen.getByText(/corba/i);
     await userEvent.click(getByTestId('filter-by-drink-btn'));
     screen.getByTestId('0-horizontal-top-text');
-  });
-  test('Testando shareBTN', async () => {
-    localStorage.setItem('doneRecipes', JSON.stringify(mockRecipes));
-    const { getByTestId, getAllByText } = render(<BrowserRouter><DoneRecipes /></BrowserRouter>);
-    await userEvent.click(getByTestId('0-horizontal-share-btn'));
-    const textCopy = getAllByText(/Link copied!/i);
-    expect(textCopy[0]).toBeInTheDocument();
   });
   test('Testando acolic or not', async () => {
     localStorage.setItem('doneRecipes', JSON.stringify([

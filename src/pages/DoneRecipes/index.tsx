@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import shareIcon from '../../images/shareIcon.svg';
 import Header from '../../components/Header';
 import { RecipeDetailsType } from '../FavoriteRecipes';
+import Share from '../../components/Share';
 
 function DoneRecipes() {
   const [recipesDone, setRecipesDone] = useState<RecipeDetailsType[]>([]);
   const [filter, setFilter] = useState('all');
   const [RecipeFilter, setRecipeFilter] = useState<string>('all');
-  const [shareMessage, setShareMessage] = useState<boolean>(false);
 
   useEffect(() => {
     const DoneRecipess = JSON.parse(localStorage.getItem('doneRecipes') ?? '[]');
@@ -26,12 +26,6 @@ function DoneRecipes() {
         || (RecipeFilter === 'drinks' && recipe.alcoholicOrNot)
     ));
 
-  const copyText = (recipe: RecipeDetailsType) => {
-    const recipeUrl = `${window.location.origin}/${recipe.type}s/${recipe.id}`;
-
-    navigator.clipboard.writeText(recipeUrl);
-    setShareMessage(true);
-  };
   return (
     <div>
       <Header />
@@ -79,16 +73,11 @@ function DoneRecipes() {
                 <p data-testid={ `${index}-horizontal-top-text` }>
                   {`${recipe.nationality} - ${recipe.category}`}
                 </p>
-                <button
-                  onClick={ () => copyText(recipe) }
-                >
-                  <img
-                    data-testid={ `${index}-horizontal-share-btn` }
-                    src={ shareIcon }
-                    alt="ícone do botão compartilhar"
-                  />
-                </button>
-                {shareMessage && <h2>Link copied!</h2>}
+                <Share
+                  idRecipe={ recipe.id }
+                  path={ recipe.type.replace('s', '') }
+                  test={ `${index}-horizontal-share-btn` }
+                />
               </>
             )}
             <div>
@@ -104,16 +93,12 @@ function DoneRecipes() {
                 <p data-testid={ `${index}-horizontal-top-text` }>
                   {recipe.alcoholicOrNot ? 'Alcoholic' : 'Non-Alcoholic'}
                 </p>
-                <button
-                  onClick={ () => copyText(recipe) }
-                >
-                  <img
-                    data-testid={ `${index}-horizontal-share-btn` }
-                    src={ shareIcon }
-                    alt="ícone do botão compartilhar"
-                  />
-                </button>
-                {shareMessage && <h2>Link copied!</h2>}
+                <Share
+                  idRecipe={ recipe.id }
+                  path={ recipe.type.replace('s', '') }
+                  test={ `${index}-horizontal-share-btn` }
+                />
+
               </>
             )}
             <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>
