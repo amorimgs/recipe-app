@@ -425,6 +425,22 @@ describe('Componente de Receitas Favoritas', () => {
 
     expect(screen.getByText(/alcoholic/i)).toHaveTextContent('Non-Alcoholic');
   });
+
+  test('deve redefinir o estado de mensagem compartilhada após copiar o texto', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(mockRecipes));
+
+    const { getByTestId, queryAllByTestId } = render(<BrowserRouter><FavoriteRecipes /></BrowserRouter>);
+
+    const shareButton = getByTestId('0-horizontal-share-btn');
+    fireEvent.click(shareButton);
+
+    const linkCopiedText = await screen.findByText('Link copied!');
+    expect(linkCopiedText).toBeInTheDocument();
+
+    const recipeCardsAfter = queryAllByTestId(/-horizontal-name/i);
+
+    expect(recipeCardsAfter.length).toBe(2);
+  });
 });
 
 describe('Testando Recipes - Tela de detalhes', () => {
