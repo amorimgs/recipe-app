@@ -3,7 +3,7 @@ import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import Profile from '../pages/Profile';
-import FavoriteRecipes from '../pages/FavoriteRecipes';
+import FavoriteRecipes from '../pages/FavoritesRecipes';
 import App from '../App';
 import * as api from '../FuctionHelpes/FetchFunction';
 
