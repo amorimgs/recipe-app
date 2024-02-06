@@ -1,6 +1,6 @@
 {
   "homepage": "https://amorimgs.github.io/recipe-app",
-  "name": "recipes-app-test",
+  "name": "recipes-app",
   "version": "1.0.0",
   "private": true,
   "engines": {
