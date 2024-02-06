@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import BlackHeartIcon from '../../images/blackHeartIcon.svg';
 import WhiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import { checkFavorite } from '../../FuctionHelpes/FetchFunction';
+import styles from './favoriteBtn.module.css';
 
 function FavoriteBtn({ obj }: { obj: any }) {
   const setFavoriteRecipes = () => {
@@ -39,6 +40,7 @@ function FavoriteBtn({ obj }: { obj: any }) {
   const [favorite, setFavorite] = React.useState<boolean>(false);
   return (
     <button
+      className={ styles.btn }
       onClick={ () => {
         setFavoriteRecipes();
         setFavorite(checkFavorite(obj.id));

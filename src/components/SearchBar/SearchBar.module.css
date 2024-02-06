@@ -1,0 +1,49 @@
+.container {
+  align-items: center;
+  background-color: #41197F;
+  border-radius: 4px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 10px;
+  padding-bottom: 5px;
+}
+
+.inputSearch {
+  border: #41197F 1px solid;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px 44px;
+}
+
+.button {
+  background: #FCDC36;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  display: block;
+  font-weight: 700;
+  margin: 10px auto;
+  text-transform: uppercase;
+  width: 70%;
+}
+
+.button:active {
+  background-color: aliceblue;
+}
+
+.containLabel {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.containLabel input {
+  margin-right: 5px;
+}
+
+.containLabel label {
+  font-size: 12px;
+  margin: 0 10px;
+}

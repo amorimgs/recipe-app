@@ -4,6 +4,7 @@ import Footer from '../../components/Footer';
 import RecipeCard from '../../components/RecipeCard';
 import { fetchCategories, fetchRecipes } from '../../FuctionHelpes/FetchFunction';
 import Context from '../../context/Context';
+import styles from './Recipe.module.css';
 
 function Recipes() {
   const [categories, setCategories] = React.useState([]);
@@ -20,6 +21,7 @@ function Recipes() {
     };
     fetchDataAndCategories();
   }, [pathname, setRecipes, urlData]);
+  console.log(categories);
 
   const handleClick = async (e:React.MouseEvent<HTMLButtonElement>) => {
     const value = e.currentTarget.textContent;
@@ -33,12 +35,12 @@ function Recipes() {
     }
   };
   return (
-    <div>
+    <div className={ styles.main }>
       <Header />
-      <h1>Receitas</h1>
-      <div>
+      <div className={ styles.containerBTN }>
         {categories && categories.map(({ strCategory }, index) => (
           <button
+            className={ styles.btn }
             key={ index }
             data-testid={ `${strCategory}-category-filter` }
             onClick={ handleClick }
@@ -47,6 +49,7 @@ function Recipes() {
           </button>
         ))}
         <button
+          className={ styles.btn }
           data-testid="All-category-filter"
           onClick={ async () => {
             setPreventButton(null);

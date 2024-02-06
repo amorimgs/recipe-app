@@ -3,6 +3,9 @@ import { useLocation, Link } from 'react-router-dom';
 import iconPerfil from '../../images/profileIcon.svg';
 import searchIcon from '../../images/searchIcon.svg';
 import SearchBar from '../SearchBar';
+import styles from './Header.module.css';
+import iconeRecipe from '../../images/iconeRecipe.svg';
+import logoText from '../../images/logoTextRecipe.png';
 
 function Header() {
   const [search, setSearch] = React.useState(false);
@@ -30,31 +33,38 @@ function Header() {
   }, [location.pathname]);
 
   return (
-    <header>
-      <div>
-        <Link to="/profile">
-          <img
-            data-testid="profile-top-btn"
-            src={ iconPerfil }
-            alt="IconePerfil"
-          />
-        </Link>
-        {(location.pathname === '/meals'
-          || location.pathname === '/drinks') && (
-            <button
-              onClick={ () => {
-                setSearch(!search);
-              } }
-            >
-              <img
-                data-testid="search-top-btn"
-                src={ searchIcon }
-                alt="searchIcon"
-              />
-            </button>
-        )}
+    <header className={ styles.header }>
+      <div className={ styles.container }>
+        <div>
+          <img src={ iconeRecipe } alt="IconeRecipe" />
+          <img src={ logoText } alt="logoText" />
+        </div>
+        <div>
+          <Link className={ styles.perfilLink } to="/profile">
+            <img
+              data-testid="profile-top-btn"
+              src={ iconPerfil }
+              alt="IconePerfil"
+            />
+          </Link>
+          {(location.pathname === '/meals'
+            || location.pathname === '/drinks') && (
+              <button
+                className={ styles.searchBTN }
+                onClick={ () => {
+                  setSearch(!search);
+                } }
+              >
+                <img
+                  data-testid="search-top-btn"
+                  src={ searchIcon }
+                  alt="searchIcon"
+                />
+              </button>
+          )}
+        </div>
       </div>
-      <h1 data-testid="page-title">{title}</h1>
+      <h1 data-testid="page-title" className={ styles.title }>{title}</h1>
       {search && <SearchBar />}
     </header>
   );

@@ -1,0 +1,24 @@
+.container {
+  align-items: center;
+  background-color: #FCDC36;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.perfilLink {
+  margin-right: 5px;
+}
+
+.searchBTN {
+  background: transparent ;
+  border: none;
+}
+
+.title {
+  color: #41197F;
+  font-size: 32px;
+  margin: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}

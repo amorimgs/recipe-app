@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { searchRecipes } from '../../FuctionHelpes/FetchFunction';
 import Context from '../../context/Context';
+import styles from './SearchBar.module.css';
 
 function SearchBar() {
   const [searchInput, setSearchInput] = React.useState('');
@@ -40,48 +41,56 @@ function SearchBar() {
   };
 
   return (
-    <div>
+    <div className={ styles.container }>
       <input
+        className={ styles.inputSearch }
         type="text"
         value={ searchInput }
         onChange={ (e) => setSearchInput(e.target.value) }
         placeholder="Enter search term"
         data-testid="search-input"
       />
-      <label>
-        <input
-          type="radio"
-          name="searchType"
-          value="Ingredient"
-          checked={ searchType === 'Ingredient' }
-          onChange={ handleSearchTypeChange }
-          data-testid="ingredient-search-radio"
-        />
-        Ingredient
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="searchType"
-          value="Name"
-          checked={ searchType === 'Name' }
-          onChange={ handleSearchTypeChange }
-          data-testid="name-search-radio"
-        />
-        Name
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="searchType"
-          value="First letter"
-          checked={ searchType === 'First letter' }
-          onChange={ handleSearchTypeChange }
-          data-testid="first-letter-search-radio"
-        />
-        First letter
-      </label>
-      <button type="button" onClick={ handleClick } data-testid="exec-search-btn">
+      <div className={ styles.containLabel }>
+        <label>
+          <input
+            type="radio"
+            name="searchType"
+            value="Ingredient"
+            checked={ searchType === 'Ingredient' }
+            onChange={ handleSearchTypeChange }
+            data-testid="ingredient-search-radio"
+          />
+          Ingredient
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="searchType"
+            value="Name"
+            checked={ searchType === 'Name' }
+            onChange={ handleSearchTypeChange }
+            data-testid="name-search-radio"
+          />
+          Name
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="searchType"
+            value="First letter"
+            checked={ searchType === 'First letter' }
+            onChange={ handleSearchTypeChange }
+            data-testid="first-letter-search-radio"
+          />
+          First letter
+        </label>
+      </div>
+      <button
+        type="button"
+        onClick={ handleClick }
+        data-testid="exec-search-btn"
+        className={ styles.button }
+      >
         Search
       </button>
     </div>

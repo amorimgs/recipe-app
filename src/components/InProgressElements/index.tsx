@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MealType, DrinkType } from '../../Types/Types';
+import styles from './InProgressElements.module.css';
 
 function InProgressElements({ recipe }: any) {
   const { pathname } = window.location;
@@ -104,16 +105,17 @@ function InProgressElements({ recipe }: any) {
 
   return (
     <div>
-      <h2 data-testid="recipe-title">
-        {(recipe as MealType).strMeal || (recipe as DrinkType).strDrink}
-      </h2>
-
-      <h3>Categoria:</h3>
-      <p data-testid="recipe-category">
-        {(recipe as MealType).strCategory || (recipe as DrinkType).strCategory}
-      </p>
+      <div className={ styles.titles }>
+        <h1 className={ styles.title1 } data-testid="recipe-title">
+          {(recipe as MealType).strMeal || (recipe as DrinkType).strDrink}
+        </h1>
+        <p data-testid="recipe-category">
+          {(recipe as MealType).strCategory || (recipe as DrinkType).strCategory}
+        </p>
+      </div>
 
       <img
+        className={ styles.img }
         src={
           (recipe as MealType).strMealThumb
           || (recipe as DrinkType).strDrinkThumb
@@ -121,7 +123,8 @@ function InProgressElements({ recipe }: any) {
         alt={ (recipe as MealType).strMeal || (recipe as DrinkType).strDrink }
         data-testid="recipe-photo"
       />
-      <ul>
+      <h2 className={ styles.title2 }>Ingredients</h2>
+      <ul className={ styles.ingredientList }>
         {ingredientsAndMeansures.ingredientes.map((el: string, i: number) => {
           return (
             <li key={ i }>
@@ -152,17 +155,20 @@ function InProgressElements({ recipe }: any) {
           );
         })}
       </ul>
-      <p data-testid="instructions">
+      <h2 className={ styles.title2 }>Instructions</h2>
+      <p className={ styles.instructions } data-testid="instructions">
         {(recipe as MealType).strInstructions
           || (recipe as DrinkType).strInstructions}
       </p>
 
       <a
+        className={ styles.link }
         href={ (recipe as MealType).strYoutube || (recipe as DrinkType).strVideo }
       >
         Assita ao vídeo
       </a>
       <button
+        className={ styles.btn }
         type="button"
         data-testid="finish-recipe-btn"
         disabled={ ingredientStep.length !== ingredientsAndMeansures.ingredientes.length }

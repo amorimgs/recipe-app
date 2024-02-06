@@ -1,0 +1,45 @@
+.titles { 
+  padding: 20px;
+  text-align: center;
+}
+
+.titles .title1 {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.title2 {
+  margin: 20px 10px;
+}
+
+.img {
+  max-width: 360px;
+}
+
+.ingredientList, .instructions {
+  border: 1px solid black;
+  border-radius: 4px;
+  margin: 10px;
+}
+
+.instructions {
+  padding: 10px;
+}
+
+.link {
+  color: #41197F;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn {
+  background-color: #FCC436;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  display: block;
+  margin: 0 auto;
+  padding: 10px 100px; 
+  text-align: center;
+}

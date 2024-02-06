@@ -1,5 +1,6 @@
 import React from 'react';
 import ShareIcon from '../../images/shareIcon.svg';
+import styles from './share.module.css';
 
 function Share({ idRecipe, path, test }: any) {
   const [copy, setCopy] = React.useState<boolean>(false);
@@ -7,6 +8,7 @@ function Share({ idRecipe, path, test }: any) {
   return (
     <>
       <button
+        className={ styles.btn }
         onClick={ () => {
           navigator.clipboard.writeText(url);
           setCopy(true);
