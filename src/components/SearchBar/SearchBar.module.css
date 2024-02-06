@@ -1,16 +1,16 @@
 .container {
   align-items: center;
-  background-color: #41197F;
+  background-color: #41197f;
   border-radius: 4px;
   color: white;
   display: flex;
   flex-direction: column;
-  margin: 10px 10px;
+  margin: 10px;
   padding-bottom: 5px;
 }
 
 .inputSearch {
-  border: #41197F 1px solid;
+  border: #41197f 1px solid;
   border-radius: 4px;
   display: block;
   margin-bottom: 10px;
@@ -18,7 +18,7 @@
 }
 
 .button {
-  background: #FCDC36;
+  background: #fcdc36;
   border: none;
   border-radius: 4px;
   color: white;

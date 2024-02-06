@@ -1,6 +1,6 @@
 .container {
   align-items: center;
-  background-color: #FCDC36;
+  background-color: #fcdc36;
   display: flex;
   justify-content: space-between;
   padding: 10px;
@@ -11,12 +11,12 @@
 }
 
 .searchBTN {
-  background: transparent ;
+  background: transparent;
   border: none;
 }
 
 .title {
-  color: #41197F;
+  color: #41197f;
   font-size: 32px;
   margin: 10px;
   text-align: center;
