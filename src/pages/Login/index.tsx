@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styles from './Login.module.css';
+import logoRecipeApp from '../../images/logoRecipesApp.svg';
+import tomate from '../../images/tomate.svg';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -37,12 +40,17 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={ handleSubmit }>
-        <label>
+    <div className={ styles.container }>
+      <div className={ styles.containerLogo }>
+        <img className={ styles.logo } src={ logoRecipeApp } alt="Logo" />
+        <img className={ styles.tomate } src={ tomate } alt="Logo" />
+      </div>
+      <h1 className={ styles.title }>Login</h1>
+      <form className={ styles.form } onSubmit={ handleSubmit }>
+        <label className={ styles.label }>
           E-mail:
           <input
+            className={ styles.input }
             type="email"
             data-testid="email-input"
             placeholder="Digite seu e-mail"
@@ -50,9 +58,10 @@ function Login() {
             onChange={ handleEmailChange }
           />
         </label>
-        <label>
+        <label className={ styles.label }>
           Senha:
           <input
+            className={ styles.input }
             type="password"
             data-testid="password-input"
             placeholder="Digite sua senha"
@@ -61,6 +70,7 @@ function Login() {
           />
         </label>
         <button
+          className={ styles.btn }
           data-testid="login-submit-btn"
           type="submit"
           disabled={ !isFormValid }

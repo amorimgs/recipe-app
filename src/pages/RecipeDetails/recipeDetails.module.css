@@ -1,0 +1,55 @@
+.titles {
+  padding: 20px;
+  text-align: center;
+}
+
+.video {
+  width: 100%;
+}
+
+.titles .title {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.title2 {
+  margin: 20px 10px;
+}
+
+.ingredientList, .instructions {
+  border: 1px solid black;
+  border-radius: 4px;
+  margin: 10px;
+}
+
+.instructions {
+  padding: 10px;
+}
+
+.card {
+  text-decoration: none;
+  width: 100px;
+}
+
+.image {
+  width: 100px;
+}
+
+.name {
+  border: 1px solid slategrey;
+  border-radius: 0 0 4px 4px;
+  border-top: none;
+  color: black;
+  overflow: auto;
+  padding: 5px;
+  text-align: center;
+}
+
+.btn {
+  background-color: #fcc436;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  left: 18px;
+  padding: 10px 117px;
+}

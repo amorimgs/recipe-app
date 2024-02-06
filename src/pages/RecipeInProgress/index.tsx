@@ -29,19 +29,21 @@ function Recipes() {
     return (
       <main>
         <div>
+          <div style={ { position: 'fixed', top: 0, right: 0 } }>
+            <FavoriteBtn
+              obj={ {
+                id: idRecipe,
+                type: mealOrDrink.replace('s', ''),
+                nationality: recipes.strArea || '',
+                category: recipes.strCategory,
+                alcoholicOrNot: recipes.strAlcoholic || '',
+                name: recipes.strMeal || recipes.strDrink,
+                image: recipes.strDrinkThumb || recipes.strMealThumb } }
+            />
+            <Share idRecipe={ idRecipe } path={ mealOrDrink.replace('s', '') } />
+          </div>
           <InProgressElements recipe={ recipes } />
         </div>
-        <FavoriteBtn
-          obj={ {
-            id: idRecipe,
-            type: mealOrDrink.replace('s', ''),
-            nationality: recipes.strArea || '',
-            category: recipes.strCategory,
-            alcoholicOrNot: recipes.strAlcoholic || '',
-            name: recipes.strMeal || recipes.strDrink,
-            image: recipes.strDrinkThumb || recipes.strMealThumb } }
-        />
-        <Share idRecipe={ idRecipe } path={ mealOrDrink.replace('s', '') } />
       </main>
     );
   }

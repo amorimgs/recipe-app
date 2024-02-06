@@ -1,0 +1,20 @@
+.email {
+  font-size: 14px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.links {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.links .btn {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid black;
+  margin-bottom: 50px;
+  padding: 20px;
+}

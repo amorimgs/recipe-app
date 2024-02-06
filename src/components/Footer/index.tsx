@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import mealIcon from '../../images/mealIcon.svg';
 import drinkIcon from '../../images/drinkIcon.svg';
+import styles from './Footer.module.css';
 
 function Footer() {
   const footerStyle: React.CSSProperties = {
@@ -9,7 +10,7 @@ function Footer() {
   };
 
   return (
-    <footer data-testid="footer" style={ footerStyle }>
+    <footer className={ styles.footer } data-testid="footer" style={ footerStyle }>
       <Link to="/drinks">
         <img
           data-testid="drinks-bottom-btn"

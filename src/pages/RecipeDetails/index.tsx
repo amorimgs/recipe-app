@@ -5,6 +5,7 @@ import { fetchData,
   checkProgress, doneProgress } from '../../FuctionHelpes/FetchFunction';
 import Share from '../../components/Share';
 import FavoriteBtn from '../../components/FavoriteBtn';
+import styles from './recipeDetails.module.css';
 
 function RecipeDetails() {
   const [details, setDetails] = React.useState<any>(null);
@@ -71,20 +72,24 @@ function RecipeDetails() {
   if (details) {
     return (
 
-      <div>
+      <div className={ styles.container }>
         <img
+          className={ styles.photo }
           style={ { maxWidth: '100%' } }
           data-testid="recipe-photo"
           src={ details.strDrinkThumb || details.strMealThumb }
           alt="img"
         />
-        <h1 data-testid="recipe-title">
-          {details.strMeal || details.strDrink}
-        </h1>
-        <p data-testid="recipe-category">
-          {pathname === 'meals' ? details.strCategory : details.strAlcoholic}
-        </p>
-        <ol>
+        <div className={ styles.titles }>
+          <h1 className={ styles.title } data-testid="recipe-title">
+            {details.strMeal || details.strDrink}
+          </h1>
+          <p data-testid="recipe-category">
+            {pathname === 'meals' ? details.strCategory : details.strAlcoholic}
+          </p>
+        </div>
+        <h2 className={ styles.title2 }>Ingredients</h2>
+        <ol className={ styles.ingredientList }>
           {ingredientsAndMeansures.ingredientes.map((el:string, i:number) => {
             return (
               <li
@@ -98,11 +103,14 @@ function RecipeDetails() {
             );
           })}
         </ol>
-        <p data-testid="instructions">
+        <h2 className={ styles.title2 }>Instructions</h2>
+        <p className={ styles.instructions } data-testid="instructions">
           {details.strInstructions}
         </p>
+        <h2 className={ styles.title2 }>Instructions</h2>
         {pathname === 'meals' && (
           <iframe
+            className={ styles.video }
             data-testid="video"
             width="560"
             height="315"
@@ -110,17 +118,29 @@ function RecipeDetails() {
             title="Youtube video player"
           />
         )}
+        <h2 className={ styles.title2 }>Recomendation</h2>
         <div
-          style={ { display: 'flex', flexDirection: 'row', overflowX: 'auto' } }
+          style={ {
+            display: 'flex',
+            flexDirection: 'row',
+            overflowX: 'auto',
+            paddingBottom: '50px' } }
         >
           {recommendation && recommendation.slice(0, 6).map((el:any, i:number) => {
             return (
               <div
-                style={ { width: '50%', marginRight: '250px' } }
+                className={ styles.card }
+                style={ { width: '50%', margin: '0 40px' } }
                 key={ i }
                 data-testid={ `${i}-recommendation-card` }
               >
+                <img
+                  className={ styles.image }
+                  src={ el.strDrinkThumb || el.strMealThumb }
+                  alt="RecipeRecomendation"
+                />
                 <p
+                  className={ styles.name }
                   data-testid={ `${i}-recommendation-title` }
                 >
                   {el.strMeal || el.strDrink}
@@ -130,7 +150,6 @@ function RecipeDetails() {
           })}
         </div>
         <div style={ { position: 'fixed', top: 0, right: '0' } }>
-          <Share idRecipe={ idRecipe } path={ pathname.replace('s', '') } />
           <FavoriteBtn
             obj={ {
               id: idRecipe,
@@ -141,9 +160,11 @@ function RecipeDetails() {
               name: details.strMeal || details.strDrink,
               image: details.strDrinkThumb || details.strMealThumb } }
           />
+          <Share idRecipe={ idRecipe } path={ pathname.replace('s', '') } />
         </div>
         {!done && (
           <button
+            className={ styles.btn }
             style={ { position: 'fixed', bottom: '0' } }
             data-testid="start-recipe-btn"
             onClick={ handleClick }

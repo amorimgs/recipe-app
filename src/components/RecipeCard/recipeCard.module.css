@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  padding-bottom: 50px;
+}
+
+.card {
+  margin: 0 20px;
+  text-decoration: none;
+  width: 100px;
+}
+
+.image {
+  max-width: 100%;
+}
+
+.name {
+  border: 1px solid slategrey;
+  border-radius: 0 0 4px 4px;
+  border-top: none;
+  color: black;
+  max-height: 60px;
+  overflow: auto;
+  padding: 5px;
+  text-align: center;
+}
