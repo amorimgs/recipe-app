@@ -52,7 +52,7 @@
 </details>
 
 
-* <details><summary><b> APIs :gear:</b></summary><br/>
+<details><summary><b> APIs :gear:</b></summary><br/>
 
     * <details><summary><b> TheMealDB API</b></summary>
 
