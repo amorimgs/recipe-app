@@ -46,18 +46,13 @@
 
 <details>
   <summary><strong>🛠 Testes</strong></summary><br />
-  
-  <details><summary><strong>Executando testes de cobertura :open_umbrella:</strong></summary><br />
 
   É possível verificar o percentual da cobertura de testes com o comando `npm run coverage`.
 
-  </details>
 </details>
 
-<details>
-  <summary><strong>:convenience_store: Desenvolvimento </strong></summary><br />
 
-  * <details><summary><b> APIs :gear:</b></summary><br/>
+* <details><summary><b> APIs :gear:</b></summary><br/>
 
     * <details><summary><b> TheMealDB API</b></summary>
 
@@ -221,4 +216,3 @@
         </details>
       Os ingredientes seguem uma ordem lógica em que o nome deles (<code>strIngredient1</code>) e a quantidade (<code>strMeasure1</code>) têm o mesmo número no final (1, nesse caso).
       </details>
-    </details>
